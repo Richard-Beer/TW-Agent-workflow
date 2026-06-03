@@ -232,7 +232,74 @@ Also add a brief summary of the microcopy requirements to the issue description,
 
 ---
 
-### 10 - Scope Pendo
+### 10 - Scope help center
+
+Gather and analyze available resources to define what help center changes are required for this issue.
+
+**Stage 1 — UX change summary**
+
+Collect relevant materials from the following sources only:
+
+- The issue, its parent, its children, and any issues linked to any of those
+- External files (e.g. Figma designs, Confluence pages, Google Drive docs) explicitly referenced in or attached to one of the above issues
+
+Using the gathered resources, produce a detailed summary of all UX changes:
+
+- **Visible changes:** design changes (new/changed/removed pages, buttons, toggles, fields, or other interactive UI elements) and microcopy changes (labels, messages, tooltips, placeholders)
+- **Functional changes:** behind-the-scenes logic changes (e.g. different journals created, data mapping changes, workflow changes, new validations)
+
+Note explicitly if a Figma file or microcopy document could not be found.
+
+**Stage 2 — Targeted article review**
+
+Determine whether the relevant knowledge base is Core or Omni (or both) based on the product context.
+
+Open the appropriate `_Metadata/TOC.md` file in the `TW-Knowledge-bases-markdown` repository to identify the relevant subtopics. Updates typically affect subtopics within a topic, not entire topics.
+
+For integration-related issues, note that integration help follows a hub-and-spoke pattern: one main overview article branching to support articles, with optional second-level overviews for larger integrations.
+
+Read the articles within the relevant subtopics. For each article, determine whether it needs to be:
+
+- **Deleted** — the article is made obsolete by the update
+- **Updated** — the article references UX elements, microcopy, or processes that are changing
+- **Created** — the update introduces new functionality that requires a new article
+
+Provide a rationale for each proposed change.
+
+**Stage 3 — Broad KB sweep**
+
+Search across all articles in the relevant knowledge base folder(s) (`Core/` and/or `Omni/`) for:
+
+- References to microcopy that is changing
+- References to UI elements that are being added, changed, or removed
+- References to processes or workflows that are changing
+- Opportunities to link to or contextually surface the feature (in a use-case sense, not promotional)
+
+Report any additional articles found that were not already identified in Stage 2.
+
+**Output**
+
+Add three new sections to the issue description:
+
+```
+**Help center — UX change summary**
+
+[Stage 1 output: detailed inventory of visible and functional changes]
+
+**Help center — Targeted updates**
+
+[Stage 2 output: list of articles to delete, update, or create, with rationale for each]
+
+**Help center — Broad sweep**
+
+[Stage 3 output: additional articles found across the KB that need updating or linking, with rationale]
+```
+
+Use `_Metadata/URLs.csv` to include article URLs where relevant.
+
+---
+
+### 11 - Scope Pendo
 
 Read the **Preliminary Pendo strategy** section from the issue's description. Based on the context of the issue and the preliminary strategy, refine and improve it.
 
@@ -259,7 +326,7 @@ Delete the Preliminary Pendo strategy section from the issue description.
 
 ---
 
-### 11 - Draft microcopy
+### 12 - Draft microcopy
 
 Open the Microcopy working file (Google Sheet) linked in the issue's **Working files** section. Using only the issue, its parent issue, and the working file as sources, draft the **New microcopy** column for each row.
 
