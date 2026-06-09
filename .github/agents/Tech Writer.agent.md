@@ -254,7 +254,17 @@ Note explicitly if a Figma file or microcopy document could not be found.
 
 Determine whether the relevant knowledge base is Core or Omni (or both) based on the product context.
 
-Open the appropriate `_Metadata/TOC.md` file in the `TW-Knowledge-bases-markdown` repository to identify the relevant subtopics. Updates typically affect subtopics within a topic, not entire topics.
+The knowledge base articles are HTML files (MadCap Flare format) in the following repos:
+
+- **Omni:** `Cin7 Omni knowledge base` repo → `Content/Resources/Topics/*.htm`
+- **Core:** `Cin7 Core knowledge base` repo → `Content/Resources/Topics/*.htm`
+
+Open the appropriate TOC file to identify the relevant subtopics:
+
+- **Omni:** `Project/TOCs/TOC.fltoc`
+- **Core:** `Project/TOCs/Core TOC.fltoc`
+
+The TOC is a nested XML structure where `TocEntry` elements with a `Title` attribute define categories and subcategories, and leaf `TocEntry` elements with a `Link` attribute reference specific articles. Updates typically affect subtopics within a topic, not entire topics.
 
 For integration-related issues, note that integration help follows a hub-and-spoke pattern: one main overview article branching to support articles, with optional second-level overviews for larger integrations.
 
@@ -266,9 +276,22 @@ Read the articles within the relevant subtopics. For each article, determine whe
 
 Provide a rationale for each proposed change.
 
+**Snippets and variables**
+
+Articles may include shared content via snippets and variables:
+
+- **Snippets** (`.flsnp` files in `Content/Resources/Snippets/`): Reusable content blocks included via `<MadCap:snippetBlock src="../Snippets/Name.flsnp" />`. Changing a snippet affects every article that includes it.
+- **Variables** (`.flvar` files in `Project/VariableSets/`): Key-value pairs (e.g. product name) referenced via `<MadCap:variable name="General.ProductName" />`.
+
+When an article flagged for update contains snippet or variable references:
+
+1. Check whether the scope rationale implies changing the snippet or variable content (not just the article text around it).
+2. If so, search for all other articles that reference the same snippet or variable to assess blast radius.
+3. Flag the dependency in the scope table rationale — e.g. "Updating the 'Cin7 Pay supported countries' snippet will also affect Cin7 Pay FAQs and Cin7 Pay pricing and support."
+
 **Stage 3 — Broad KB sweep**
 
-Search across all articles in the relevant knowledge base folder(s) (`Core/` and/or `Omni/`) for:
+Search across all articles in the relevant knowledge base `Content/Resources/Topics/` folder for:
 
 - References to microcopy that is changing
 - References to UI elements that are being added, changed, or removed
@@ -279,27 +302,71 @@ Report any additional articles found that were not already identified in Stage 2
 
 **Output**
 
-Add three new sections to the issue description:
+Add two new sections to the issue description:
 
 ```
-**Help center — UX change summary**
+**UX change summary**
 
-[Stage 1 output: detailed inventory of visible and functional changes]
+| Change | Type | Details |
+|---|---|---|
+| **Visible changes** | | |
+| [Element or page] | [Added/Changed/Removed] | [Description] |
+| ... | | |
+| **Functional changes** | | |
+| [Behaviour or logic] | [Added/Changed/Removed] | [Description] |
+| ... | | |
 
-**Help center — Targeted updates**
+**Sources:**
+- [List of sources consulted, e.g. Figma file, microcopy document, linked issue]
+- [Note any expected sources that were missing, e.g. "Figma file: not found"]
 
-[Stage 2 output: list of articles to delete, update, or create, with rationale for each]
+**Scope**
 
-**Help center — Broad sweep**
-
-[Stage 3 output: additional articles found across the KB that need updating or linking, with rationale]
+| Article | Action | Rationale |
+|---|---|---|
+| **Primary updates** | | |
+| [Article title] | [Delete/Update/Create] | [Why] |
+| ... | | |
+| **Secondary updates** | | |
+| [Article title] | [Delete/Update/Create] | [Why] |
+| ... | | |
 ```
 
-Use `_Metadata/URLs.csv` to include article URLs where relevant.
+Primary updates are articles within the most relevant subtopics (Stage 2). Secondary updates are articles found in the broad KB sweep (Stage 3).
 
 ---
 
-### 11 - Scope Pendo
+### 11 - Approve scope
+
+Publish the approved scope to the Help center working file.
+
+**Steps**
+
+1. Read the **Scope** section from the issue description (the table produced by step 10).
+2. Locate the Help center Google Doc link in the issue's **Working files** section. Extract the doc ID from the URL.
+3. Determine the relevant knowledge base repo root. Use the `Cin7 Omni knowledge base` repo for Omni issues and the `Cin7 Core knowledge base` repo for Core issues (based on the product context). The KB path is the absolute path to that repo root.
+4. Using `drive.py`, write the scope table to the doc on the first tab (named "Scope") and create article tabs for all primary and secondary updates:
+
+   a. Write the full scope table content to a temporary file (e.g. `_scope_temp.md`) in the `google_drive` scripts directory. This avoids shell quoting issues with special characters in the content.
+   b. Run the command:
+
+```
+python -B drive.py write-scope "<doc_id>" --content-file "_scope_temp.md" --kb-path "<absolute_path_to_kb_repo_root>"
+```
+
+   c. Delete the temporary file after the command completes.
+
+The content written should be the full scope table exactly as it appears in the issue description.
+
+This command will:
+- Write the scope table to the first tab, named "Scope"
+- For each article in **Primary updates** or **Secondary updates** with Action = Update: create a tab named `[edit] <Article name>` containing the article's current HTML content (converted to Google Docs format). The HTML is sourced from the `.htm` file in `Content/Resources/Topics/` within the knowledge base repo. Snippets (`<MadCap:snippetBlock>`, `<MadCap:snippetText>`) are resolved inline, variables (`<MadCap:variable>`) are substituted with their values from the `.flvar` files, and special content is given background colours: overview (light blue), notes (light amber), warnings (light red), snippets (light green), variables (light purple). Images are replaced with `[Image: path]` placeholders (highlighted in light grey). Links to local `.htm` files are resolved to their Zendesk URLs using the mapping at `.github/zendesk-mappings/output/topics.csv` in the knowledge base repo. Links that are already absolute URLs are preserved as-is.
+- For each article in **Primary updates** or **Secondary updates** with Action = Create: create a blank tab named `[new] <Article name>`
+- If a tab name would exceed 100 characters, the article name is truncated
+
+---
+
+### 12 - Scope Pendo
 
 Read the **Preliminary Pendo strategy** section from the issue's description. Based on the context of the issue and the preliminary strategy, refine and improve it.
 
@@ -326,7 +393,7 @@ Delete the Preliminary Pendo strategy section from the issue description.
 
 ---
 
-### 12 - Draft microcopy
+### 13 - Draft microcopy
 
 Open the Microcopy working file (Google Sheet) linked in the issue's **Working files** section. Using only the issue, its parent issue, and the working file as sources, draft the **New microcopy** column for each row.
 
@@ -337,3 +404,71 @@ For each row:
 - You may update the **Notes** column with brief context explaining your decision (e.g. why no change is needed, or what informed the draft)
 
 Do not add or remove rows. Do not modify any column other than **New microcopy** and **Notes**.
+
+---
+
+### 14 - Approve help center drafts
+
+Convert the edited Google Doc article tabs back into MadCap Flare HTML files, commit them to a new branch in the knowledge base repo, and create a pull request.
+
+**Steps**
+
+1. Read the issue to identify:
+   - The issue key (e.g. `OTW-1234`)
+   - The product context — **Core** or **Omni**
+   - The Help center Google Doc link from the **Working files** section
+
+2. Extract the doc ID from the Google Doc URL (the segment between `/d/` and `/edit`).
+
+3. Determine the knowledge base repo path:
+   - Core: `c:\Users\RichardBeer\Repos\Cin7 Core knowledge base`
+   - Omni: `c:\Users\RichardBeer\Repos\Cin7 Omni knowledge base`
+
+4. In the knowledge base repo, ensure a clean branch:
+
+   ```
+   cd <kb_repo_path>
+   git checkout master
+   git pull
+   git checkout -b <issue_key>
+   ```
+
+5. Run the apply-drafts command to convert and apply the Google Doc content:
+
+   ```
+   cd c:\Users\RichardBeer\Repos\TW Tech Writer agent\Scripts\google_drive
+   python -B drive.py apply-drafts "<doc_id>" --kb-path "<kb_repo_path>"
+   ```
+
+6. Review the JSON summary printed by the command. Report any errors.
+
+7. Stage, commit, and push the changes:
+
+   ```
+   cd <kb_repo_path>
+   git add -A
+   git commit -m "<issue_key>: Apply help center draft changes"
+   git push -u origin <issue_key>
+   ```
+
+8. Create a pull request targeting `master` with:
+   - **Title:** `<issue_key>: Help center updates`
+   - **Body:** A list of modified and created files from the JSON summary. If any new articles were created, note that they will need TOC entries added manually.
+
+**What the apply-drafts command does**
+
+This command reads the Google Doc and processes each `[edit]` and `[new]` tab:
+
+- **[edit] tabs:** Finds the matching `.htm` file (by article name), converts the Google Doc content back to MadCap Flare HTML, and overwrites the original file. The conversion reverses the colour-coding applied during Task 11:
+  - Light blue paragraphs → `<div class="overview">`
+  - Light amber paragraphs → `<div class="note">`
+  - Light red paragraphs → `<div class="warning">`
+  - Light green paragraphs → `<MadCap:snippetBlock src="..." />` (mapped to the original snippet reference by position)
+  - Purple-highlighted text → `<MadCap:variable name="..." />`
+  - Yellow-highlighted `[Image: path]` → `<img src="path" />`
+  - Zendesk URLs in links → local `.htm` hrefs (reversed using the URL mapping)
+  - Named anchors in headings and `<col>` styles in tables are preserved from the original file
+
+- **[new] tabs:** Converts the content to a new `.htm` file. The filename is derived from the `<h1>` heading in the content. The HTML wrapper matches the knowledge base type (Core or Omni).
+
+- **Snippet updates:** If a snippet's content (green region) has been modified in the Google Doc, the corresponding `.flsnp` file is updated with the new content. The `.htm` file retains the `<MadCap:snippetBlock>` reference.
