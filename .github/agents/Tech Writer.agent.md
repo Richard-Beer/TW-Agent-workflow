@@ -276,17 +276,21 @@ For each affected page — except those being deleted — determine:
 
 **Output**
 
-Add the microcopy requirements to the Microcopy working file (Google Sheet) linked in the issue's **Working files** section. Populate one row per microcopy item using the sheet's five columns:
+Add the microcopy requirements to the Microcopy working file (Google Sheet) linked in the issue's **Working files** section. Populate one row per microcopy item using the sheet's seven columns:
 
-| Column | Content |
-|---|---|
-| Location | The app page or area where the microcopy appears |
-| Element | The specific UI element (e.g. button label, tooltip, field placeholder) |
-| Current microcopy (if any) | The existing text if you are confident of it; `UNKNOWN` if you are unsure; `NEW` if the element is new and has no existing microcopy |
-| New microcopy | The proposed new text (leave blank if not yet known) |
-| Notes | Any additional context, such as whether the item is new, updated, or deleted |
+| Column | Content | Who populates |
+|---|---|---|
+| Location | The app page or area where the microcopy appears | Agent |
+| Element | The specific UI element (e.g. button label, tooltip, field placeholder) | Agent |
+| Current | The existing text if you are confident of it; `UNKNOWN` if you are unsure; `NEW` if the element is new and has no existing microcopy | Agent |
+| New | Leave blank for now (populated in Task 13) | Agent (leave blank) |
+| Notes | Any additional context, such as whether the item is new, updated, or deleted | Agent |
+| Questions/Comments | Feedback or open questions for Product/Design (optional; typically completed after Task 13) | Manual |
+| QA | QA sign-off or review status (optional; typically completed post-draft) | Manual |
 
-Group rows by page, adding a blank row between each page's items for readability. Include a row for each microcopy item on pages being deleted, leaving **New microcopy** blank and noting "DELETE" in the **Notes** column.
+Populate Location, Element, Current, and Notes columns only; leave New, Questions/Comments, and QA blank.
+
+Group rows by page, adding a blank row between each page's items for readability. Include a row for each microcopy item on pages being deleted, leaving **Current** as "DELETE", **New** blank, and noting why in the **Notes** column.
 
 For dialogs/modals, use a single row per dialog/modal and represent the text in plain text segments separated by `|` in this order: Heading | Body | CTA 1 | CTA 2 (add more CTA segments if needed).
 
@@ -444,15 +448,15 @@ Delete the Preliminary Pendo strategy section from the issue description.
 
 ### 13 - Draft microcopy
 
-Open the Microcopy working file (Google Sheet) linked in the issue's **Working files** section. Using only the issue, its parent issue, and the working file as sources, draft the **New microcopy** column for each row.
+Open the Microcopy working file (Google Sheet) linked in the issue's **Working files** section. Using only the issue, its parent issue, and the working file as sources, draft the **New** column for each row.
 
 For each row:
 
-- If microcopy is needed, write a draft in the **New microcopy** column
-- If no change is needed, write `NO CHANGE` in the **New microcopy** column
-- You may update the **Notes** column with brief context explaining your decision (e.g. why no change is needed, or what informed the draft)
+- If microcopy is needed, write a draft in the **New** column
+- If no change is needed, write `No change` in the **New** column (this will trigger italic gray formatting)
+- You may optionally update the **Notes** column with brief context explaining your decision (e.g. why no change is needed, or what informed the draft)
 
-Do not add or remove rows. Do not modify any column other than **New microcopy** and **Notes**.
+Do not add or remove rows. Do not modify any column other than **New** and **Notes**. Leave **Questions/Comments** and **QA** columns blank (these are for manual stakeholder input).
 
 ---
 

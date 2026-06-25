@@ -37,6 +37,8 @@ from microcopy_scope import (
     CELL_VERTICAL_ALIGNMENT,
     CELL_HORIZONTAL_ALIGNMENT,
     CELL_WRAP_STRATEGY,
+    _GRAY,
+    _RED,
 )
 
 SCOPES = [
@@ -189,6 +191,56 @@ def create_sheet(name, parent_id=None):
                 'fields': 'pixelSize',
             }
         })
+
+    # Conditional formatting for "New" column (index 3)
+    # Rule 1: Light red background if cell is empty
+    requests.append({
+        'addConditionalFormatRule': {
+            'rule': {
+                'ranges': [
+                    {
+                        'sheetId': 0,
+                        'startColumnIndex': 3,
+                        'endColumnIndex': 4,
+                        'startRowIndex': 1,
+                        'endRowIndex': 1000,
+                    }
+                ],
+                'booleanRule': {
+                    'condition': {'type': 'BLANK'},
+                    'format': {'backgroundColor': _RED},
+                }
+            },
+            'index': 0,
+        }
+    })
+
+    # Rule 2: Italic gray text if cell equals "No change"
+    requests.append({
+        'addConditionalFormatRule': {
+            'rule': {
+                'ranges': [
+                    {
+                        'sheetId': 0,
+                        'startColumnIndex': 3,
+                        'endColumnIndex': 4,
+                        'startRowIndex': 1,
+                        'endRowIndex': 1000,
+                    }
+                ],
+                'booleanRule': {
+                    'condition': {
+                        'type': 'CUSTOM_FORMULA',
+                        'values': [{'userEnteredValue': '=$D2="No change"'}]
+                    },
+                    'format': {
+                        'textFormat': {'italic': True, 'foregroundColor': _GRAY}
+                    },
+                }
+            },
+            'index': 1,
+        }
+    })
 
     get_sheets_service().spreadsheets().batchUpdate(
         spreadsheetId=sheet_id,

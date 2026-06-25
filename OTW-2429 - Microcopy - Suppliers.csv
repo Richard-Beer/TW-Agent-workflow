@@ -1,0 +1,130 @@
+Element,Current,New,Notes,Questions or comments for Product and Design,Scott's column,QA
+Title,ForesightAI Settings,No change,,,,
+Tab,Suppliers,No change,,,,
+Button,Save,No change,,,,
+Button,Cancel,No change,,,,
+Info (1 unsaved change),x unsaved change,No change,,,,
+Info (>1 unsaved change),x unsaved changes,No change,,,,
+Save modal (with 1 change),"Save changes?
+
+You have 1 unsaved change. Would you like to save them?
+
+Cancel | Save","Save changes?
+
+You have 1 unsaved change. Are you sure you want to save?
+
+Cancel | Save change",,,,
+Save modal (with >1 changes),...,"Save changes?
+
+You have x unsaved changes. Are you sure you want to save?
+
+Cancel | Save changes",,,,
+Cancel modal (with 1 change),"Discard changes?
+
+You have 1 unsaved change. This will discard all edits and cannot be undone.
+
+Keep editing | Discard","Discard changes?
+
+You have 1 unsaved change. Are you sure you want to discard?
+
+Cancel | Discard change",,,,
+Cancel modal (with >1 changes),...,"Discard changes?
+
+You have x unsaved changes. Are you sure you want to discard?
+
+Cancel | Discard changes",,,,
+Switch tab modal (with 1 change),"Unsaved changes
+
+You have 1 unsaved change. Do you want to save them, or discard them before leaving?
+
+Keep editing | Discard | Save","Unsaved changes
+
+You have 1 unsaved change. Do you want to keep editing, discard this change, or save before leaving?
+
+Keep editing | Discard change | Save change",,,,
+Switch tab modal (with >1 change),"Unsaved changes
+
+You have 2 unsaved changes. Do you want to save them, or discard them before leaving?
+
+Keep editing | Discard | Save","Unsaved changes
+
+You have x unsaved changes. Do you want to keep editing, discard these changes, or save them before leaving?
+
+Keep editing | Discard changes | Save changes",,,,
+Search placeholder,Search,No change,,,,
+Button,[icon] Import,No change,,* How does this work?,,
+Button + Options,"[icon] Export
+* XLS
+* CSV",No change,,* How does this work?,,
+Filter,"* View all suppliers
+* View modified suppliers
+* View non-modified suppliers","* All suppliers
+* Modified suppliers
+* Non-modified suppliers",,,,
+Info (selection),x selected Select all x Clear selection,No change,,* Haven't seen this before,,
+Button,Bulk edit,No change,,,,
+Modal for bulk edit,"Bulk editing x suppliers
+
+Minimum order amount (CURR) + Leave blank to skip
+Purchase order period (days) + Leave blank to skip
+Lead time (days) + Leave blank to skip
+Set period and time + Select
+* Automatically
+* Manually
+
+Cancel | Save","Bulk editing x suppliers
+
+Minimum order (CURR)
+Purchase order period (days)
+Lead time (days)
+Set period and time + Select
+* Automatically
+* Manually
+
+Cancel | Save",,* Fields should be conditional on last field choice,,
+Modal for bulk edit confirmation (1 edit),"Confirm bulk edit
+
+Do you want to update 1 parameter for x suppliers?
+
+Cancel | Save","Confirm bulk edit
+
+Are you sure you want to update 1 parameter for x suppliers?
+
+Cancel | Save changes",,* Parameter?,,
+Modal for bulk edit confirmation (>1 edit),"Confirm bulk edit
+
+Do you want to update x parameters for x suppliers?
+
+Cancel | Save","Confirm bulk edit
+
+Are you sure you want to update x parameters for x suppliers?
+
+Cancel | Save changes",,,,
+Columns,"* [unnamed]
+* [unnamed]
+* Supplier
+* Minimum order amount (CURR)
+* Set period and time
+** Automatically
+** Manually
+* Purchase order period
+* Lead time","* [unnamed]
+* [unnamed]
+* Supplier
+* Minimum order (CURR)
+* Set period and time
+** Automatically
+** Manually
+* Purchase order period (days)
+* Lead time (days)",,"* How is CURR defined?
+* Why blank column?",,
+Modal for reset to default,"Reset to default
+
+Reset this supplier to default values? This cannot be undone.
+
+Cancel | Reset","Confirm supplier reset
+
+Are you sure you want to reset [supplier]? This cannot be undone.
+
+Cancel | Reset supplier",,,,
+Pagination,x-x of x,With design,,,,

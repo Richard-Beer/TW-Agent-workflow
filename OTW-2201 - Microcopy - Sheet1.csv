@@ -1,0 +1,42 @@
+Location,Element,Microcopy (draft),Microcpy (TW update),Notes,Questions,QA
+Autosync page,,,,,,
+Header,Title,Auto Sync Status,Autosync history,"* No space in ""Autosync"" to match settings",,
+Filters,Field (label),Search by,Search,"* I assume that the dropdown will be removed, so I have not reviewed it here",,
+,Field (label + options),"Status
+* ...","Status
+* All
+* Synced
+* Error",,,
+,Field (label + placeholder),From + dd/mm/yyyy,No change,,,
+,Field (label + placeholder),To + dd/mm/yyyy,No change,,,
+,Button,Export,No change,,,
+Table (main),Column (header + value format),"Date
+* yyyy-mm-dd hh:mm",No change,,,
+,Column (header),Run Id,Run ID,* ID not id,,
+,Column (header),Order Reference,Reference ,* To match Xero dashboard column name,,
+,Column (header + values),"Message Type
+* Invoice
+* ...","Type
+* Customer
+* Invoice
+* Credit note
+* Payment
+* Fee
+* Payout
+* Supplier
+* Supplier invoice
+* Supplier credit note
+* Landed cost
+* Stock adjustment
+* COGS
+* Gift voucher
+* Store credit",* To match Xero dashboard options,,
+,Column (header + values),"Status
+* Success
+* Failed","Status
+* Synced
+* Error",,,
+,Pagination,Rows per page: x x-x of x,No change,,,
+Xero settings,,,,,,
+Settings,Field (label),Alert notification email,Error notification email,* This setting name must be updated to reflect its new function as notifying users of errors only,,
+Settings,Button,...,View autosync history,"* I prefer just ""Autosync history"" but I suspect others will disagree. Use it if ""View autosync history"" is too long",,
