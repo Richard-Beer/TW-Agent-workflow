@@ -192,7 +192,7 @@ def create_sheet(name, parent_id=None):
             }
         })
 
-    # Conditional formatting for "New" column (index 3)
+    # Conditional formatting for "New" column (index 3), rows 2-1000
     # Rule 1: Light red background if cell is empty
     requests.append({
         'addConditionalFormatRule': {
@@ -231,7 +231,7 @@ def create_sheet(name, parent_id=None):
                 'booleanRule': {
                     'condition': {
                         'type': 'CUSTOM_FORMULA',
-                        'values': [{'userEnteredValue': '=$D2="No change"'}]
+                        'values': [{'userEnteredValue': '=D2="No change"'}]
                     },
                     'format': {
                         'textFormat': {'italic': True, 'foregroundColor': _GRAY}
