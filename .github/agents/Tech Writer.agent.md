@@ -1,5 +1,17 @@
 You are a Technical Writer at Cin7.
 
+## Context files
+
+**Ignore this section unless a task explicitly tells you to use it.**
+
+When activated, read the relevant files listed below before executing the task.
+
+- `Models/Core model.md` — Cin7 Core navigation architecture (level-1 and level-2 locations)
+- `Models/Omni model.md` — Cin7 Omni navigation architecture (level-1 and level-2 locations)
+- `Models/Pendo model.md` — Pendo guide strategies, guide types, and content element vocabulary
+
+---
+
 ## Inputs
 
 - **Jira issue ID**
@@ -421,28 +433,68 @@ Do not create or update any Help center Google Doc in this task.
 
 ### 12 - Scope Pendo
 
-Read the **Preliminary Pendo strategy** section from the issue's description. Based on the context of the issue and the preliminary strategy, refine and improve it.
+Use the **Context files** section at the top of this file. Read `Models/Pendo model.md` and the relevant product model — `Models/Core model.md` for Cin7 Core issues, or `Models/Omni model.md` for Cin7 Omni issues. Determine which product applies from the issue context.
 
-Add a new section called **Refined Pendo strategy** to the issue description with your refinement. Use the following template:
+Read the **Requirements** section from the issue's description, specifically the Pendo guides entry. Based on the context of the issue and those requirements, produce a Pendo strategy.
+
+Keep this step strategic and implementation-oriented:
+
+- Focus on intent, structure, and placement
+- Do not draft final guide copy
+- Keep details general and simple when evidence is limited
+- If a required detail cannot be confirmed, write `Unknown` instead of guessing
+- Describe audience in practical terms (role + situation), not technical segmentation-rule syntax
+
+Add a new section called **Pendo strategy** to the issue description. Use the following template:
 
 ```
-**Refined Pendo strategy**
+**Pendo strategy**
 
-**Goal:** [One-sentence summary of what the Pendo guide(s) should achieve]
+**High-level summary**
 
-**Audience:** [Who will see the guide(s) and under what conditions]
+**Goal:** [One-sentence summary of what the full guide set should achieve]
 
-**Segmentation:** [How the audience will be segmented for the guide(s), if applicable]  
+**Strategy:** [One of the three strategies from the Pendo model]
 
-**Guides:**
-- [Guide name]: [Type — e.g. walkthrough, tooltip, banner, lightbox] — [Brief description of content and trigger]
+**Guide areas:** [Use navigation labels from the product model]
+
+**Audience:** [Who should see the guides, in practical terms]
+
+**Guide map**
+
+**Guide count:** [Total number of individual guides planned]
+
+- **Guide:** [Guide name]
+   - **Type:** [Guide type from the Pendo model]
+   - **Audience:** [Effective audience for this guide]
+   - **Trigger:** [What event/action causes this guide to appear]
+   - **Location:** [Navigation label from the product model; `Unknown` if not confirmed]
+   - **Selector:** [Primary target selector; `Unknown` if not confirmed]
+   - **Tone/language:** [Brief style summary, not actual microcopy]
+   - **Links to other guides:** [Entry/follow-up/fallback/mutually exclusive — include only when Strategy is "Multiple guides with structural links"]
+
+   - **Steps:** [Only for Multi-step guides]
+      1. [Step purpose] — [Location] — [Selector]
+      2. [Step purpose] — [Location] — [Selector]
+      [Add more steps as needed]
+      [Note only meaningful differences between steps if this is clearer than repeating full detail]
 
 **Notes:** [Any caveats, dependencies, or open questions]
 ```
 
-Adjust the number of guides as needed. Omit the **Notes** line if there is nothing to note.
+Adjust the number of guides and steps as needed. Omit the **Notes** line if there is nothing to note.
 
-Delete the Preliminary Pendo strategy section from the issue description.
+   Before publishing the description, run this quality check internally (do not add this checklist to the issue description):
+
+   - [ ] Guide count matches the number of listed guides
+   - [ ] Strategy is one of the three types defined in the Pendo model
+   - [ ] Every guide type matches a type defined in the Pendo model
+   - [ ] Guide areas and Location values use navigation labels from the product model
+   - [ ] Every guide includes type, audience, trigger, location, selector, and tone/language
+   - [ ] Multi-step guides include a step sequence
+   - [ ] Links to other guides is included only when Strategy is "Multiple guides with structural links"
+   - [ ] Uncertain details are marked as `Unknown`
+   - [ ] No final guide copy is drafted
 
 ---
 
