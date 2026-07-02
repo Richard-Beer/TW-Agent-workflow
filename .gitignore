@@ -1,3 +1,5 @@
 *.trec
 Scripts/google_drive/credentials.json
 Scripts/google_drive/token.pickle
+__pycache__/
+*.pyc
