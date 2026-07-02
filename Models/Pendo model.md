@@ -6,12 +6,18 @@
 * Multiple guides without structural links
 * Multiple guides with structural links
 
-## Types
+## Guide types
 
 * Single step
 * Multi-step
 
-## Content
+## Location types
+
+* Site-wide
+* One page (page artefact preferred)
+* Multiple pages (page artefact required)
+
+## Guide content
 
 * Header (eg, Step 1 of 2)
 * Title

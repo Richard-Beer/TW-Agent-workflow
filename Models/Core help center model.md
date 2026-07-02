@@ -1,0 +1,71 @@
+# Core help center model
+
+## Architecture
+
+This section maps the Cin7 Core Help Center topic hierarchy from the Core TOC. Use it to guide information structure and check section-level coverage.
+
+- General
+  - Getting started
+  - Account settings
+  - Users
+  - Roles and permissions
+  - Login and security
+  - Subscription
+  - Documents and templates
+  - Emails
+  - Importing and exporting CSVs
+  - Cin7 API
+- Products, services, and stock
+  - Products and services
+  - Stock and replenishment
+  - Materials Requirements Planning (MRP)
+  - Cin7 ForesightAI
+- Production and manufacturing
+  - Assembly and disassembly
+  - Jobs
+  - Production Bill of Materials (BOM)
+  - Advanced Manufacturing setup
+  - Modeling production processes
+  - Production orders
+  - Co-manufacturing
+  - Manufacturing Execution System (MES)
+- Sales
+  - Customers
+  - Leads and opportunities (CRM)
+  - Sales orders and invoices
+  - Pricing
+  - Credit note and refunds
+  - Returns and RMA
+- Purchases
+  - Suppliers
+  - Purchase orders and invoices
+  - Costs
+  - Supplier credit notes and returns
+  - Stock receipt and put away
+- Accounting, payments, and lending
+  - Accounting
+  - Tax rules
+  - Cin7 Pay
+  - Cin7 Capital
+  - FTA and VAT in the United Arab Emirates
+  - Banking and payments
+  - Expenses and receipts
+  - Inventory costs
+  - Avalara
+  - QuickBooks Online
+  - Xero
+- Cin7 Core POS
+  - POS setup
+  - POS customers
+  - POS loyalty programs
+  - POS sales
+- Cin7 Core B2B Portal
+  - Subtopics not expanded in the provided TOC excerpt
+- Ecommerce
+  - Subtopics not expanded in the provided TOC excerpt
+- Warehouse, shipping, and fulfillment
+  - Subtopics not expanded in the provided TOC excerpt
+- Other integrations
+  - Subtopics not expanded in the provided TOC excerpt
+- Reports and automation
+  - Subtopics not expanded in the provided TOC excerpt

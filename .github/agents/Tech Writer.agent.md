@@ -9,6 +9,19 @@ When activated, read the relevant files listed below before executing the task.
 - `Models/Core model.md` — Cin7 Core navigation architecture (level-1 and level-2 locations)
 - `Models/Omni model.md` — Cin7 Omni navigation architecture (level-1 and level-2 locations)
 - `Models/Pendo model.md` — Pendo guide strategies, guide types, and content element vocabulary
+- `Models/Core help center model.md` — Cin7 Core help center topic hierarchy
+
+### Shared model context activation
+
+When a task asks for product model context, apply this rule:
+
+1. Determine product context from the issue: `Core`, `Omni`, or `Unknown`.
+2. If `Core`, read `Models/Core model.md`.
+3. If `Core`, also read `Models/Core help center model.md`.
+4. If `Omni`, read `Models/Omni model.md`.
+5. If `Unknown`, do not guess. Use `Unknown` for product-specific details.
+
+Tasks can additionally require `Models/Pendo model.md` when needed.
 
 ---
 
@@ -150,6 +163,8 @@ Once you complete the Context, stop and wait.
 ### 3 - Preliminary scope
 
 Based on the Context, identify roughly what deliverables Technical Writing needs to produce. Deliverables may include 
+
+Use the **Shared model context activation** rule in the **Context files** section before scoping deliverables.
 
 - Help center — creating, updating, deleting, or otherwise changing help center articles, subtopics, or topics
 - Microcopy — creating, updating, deleting, or otherwise changing UI text
@@ -316,6 +331,8 @@ Gather and analyze available resources to define what help center changes are re
 
 **Stage 1 — UX change summary (detailed)**
 
+Before collecting sources, use the **Shared model context activation** rule from **Context files**.
+
 Collect relevant materials from the following sources only:
 
 - The issue, its parent, its children, and any issues linked to any of those
@@ -433,7 +450,7 @@ Do not create or update any Help center Google Doc in this task.
 
 ### 12 - Scope Pendo
 
-Use the **Context files** section at the top of this file. Read `Models/Pendo model.md` and the relevant product model — `Models/Core model.md` for Cin7 Core issues, or `Models/Omni model.md` for Cin7 Omni issues. Determine which product applies from the issue context.
+Use the **Shared model context activation** rule in the **Context files** section, and read `Models/Pendo model.md`.
 
 Read the **Requirements** section from the issue's description, specifically the Pendo guides entry. Based on the context of the issue and those requirements, produce a Pendo strategy.
 
