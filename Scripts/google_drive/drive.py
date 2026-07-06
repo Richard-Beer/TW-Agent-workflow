@@ -799,10 +799,14 @@ def _find_or_create_tab(docs_service, doc_id, tab_name):
         fields='tabs(tabProperties)',
     ).execute(num_retries=5)
 
-    for tab in doc.get('tabs', []):
+    existing_tabs = doc.get('tabs', [])
+    print(f"[DEBUG] Tabs found in doc: {[t.get('tabProperties', {}).get('title') for t in existing_tabs]}")
+
+    for tab in existing_tabs:
         props = tab.get('tabProperties', {})
         if props.get('title') == tab_name:
             tab_id = props['tabId']
+            print(f"[DEBUG] Existing tab '{tab_name}' found — id: {tab_id}")
             doc_full = docs_service.documents().get(
                 documentId=doc_id,
                 includeTabsContent=True,
@@ -820,27 +824,40 @@ def _find_or_create_tab(docs_service, doc_id, tab_name):
             return tab_id, 1
 
     # Tab not found — create it
+    print(f"[DEBUG] Tab '{tab_name}' not found — creating")
     result = docs_service.documents().batchUpdate(
         documentId=doc_id,
-        body={'requests': [{'createTab': {'tabProperties': {'title': tab_name}}}]},
+        body={'requests': [{'addDocumentTab': {'tabProperties': {'title': tab_name}}}]},
     ).execute(num_retries=5)
+
+    print(f"[DEBUG] addDocumentTab raw reply: {result.get('replies')}")
 
     new_tab_id = (
         (result.get('replies') or [{}])[0]
-        .get('createTab', {})
+        .get('addDocumentTab', {})
         .get('tabProperties', {})
         .get('tabId')
     )
+    print(f"[DEBUG] new_tab_id from reply: {new_tab_id!r}")
     if not new_tab_id:
         # Re-read to find the newly created tab
+        print("[DEBUG] Falling back to re-read to find new tab")
         doc = docs_service.documents().get(
             documentId=doc_id,
             fields='tabs(tabProperties)',
         ).execute(num_retries=5)
-        for tab in doc.get('tabs', []):
+        all_tabs = doc.get('tabs', [])
+        print(f"[DEBUG] Tabs after creation: {[t.get('tabProperties', {}).get('title') for t in all_tabs]}")
+        for tab in all_tabs:
             if tab.get('tabProperties', {}).get('title') == tab_name:
                 new_tab_id = tab['tabProperties']['tabId']
+                print(f"[DEBUG] Found new tab by name — id: {new_tab_id!r}")
                 break
+    if not new_tab_id:
+        raise RuntimeError(
+            f"createTab succeeded but could not retrieve tabId for '{tab_name}'. "
+            "Content was NOT written to avoid polluting the wrong tab."
+        )
     return new_tab_id, 1
 
 
