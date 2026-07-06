@@ -106,7 +106,7 @@ that labels are inline and clickable in Jira.
 ```
 
 Include only lines for in-scope deliverables. Keep the Help center line as plain text (not
-a hyperlink) until the branch is created in **Task 5 — Approve scope**.
+a hyperlink) until the branch is created in **Task 5 — Approve help center scope**.
 
 Once you complete the Working files step, continue to Step 2d.
 

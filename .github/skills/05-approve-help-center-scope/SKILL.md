@@ -1,10 +1,10 @@
 ---
-name: 05-approve-scope
+name: 05-approve-help-center-scope
 description: 'Task 5 of the Tech Writer workflow. Use to approve Help center scope for a Cin7 Jira issue — either by publishing scoped articles to a Google Doc working file, or by creating a Help center branch in the TW-Knowledge-bases-markdown repo.'
 argument-hint: 'Jira issue ID, then approval type: "Approve and make Google working files" or "Approve and make branch"'
 ---
 
-# Task 5 — Approve scope
+# Task 5 — Approve help center scope
 
 Approve the Help center scope for the issue using one of two paths, chosen by the user.
 

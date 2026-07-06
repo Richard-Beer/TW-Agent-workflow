@@ -26,9 +26,9 @@ Otherwise, perform the specified task on the relevant Jira issue.
 | 2  | Approve intake            | `02-approve-intake`            |
 | 3  | Scope microcopy           | `03-scope-microcopy`           |
 | 4  | Scope help center         | `04-scope-help-center`         |
-| 5  | Approve scope             | `05-approve-scope`             |
+| 5  | Approve help center scope | `05-approve-help-center-scope` |
 | 6  | Scope Pendo               | `06-scope-pendo`               |
-| 7  | Draft microcopy           | `07-draft-microcopy`           |
+| 7  | Approve microcopy scope   | `07-approve-microcopy-scope`   |
 | 8  | Create help center PR     | `08-create-help-center-pr`     |
 | 9  | Publish to knowledge base | `09-publish-to-knowledge-base` |
 
@@ -73,9 +73,9 @@ Required format:
   - [TO DO] 2d - Populate children
 - [TO DO] 3 - Scope microcopy
 - [TO DO] 4 - Scope help center
-- [TO DO] 5 - Approve scope
+- [TO DO] 5 - Approve help center scope
 - [TO DO] 6 - Scope Pendo
-- [TO DO] 7 - Draft microcopy
+- [TO DO] 7 - Approve microcopy scope
 - [TO DO] 8 - Create help center PR
 - [TO DO] 9 - Publish to knowledge base
 ```

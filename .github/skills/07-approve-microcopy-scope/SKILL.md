@@ -1,10 +1,10 @@
 ---
-name: 07-draft-microcopy
-description: 'Task 7 of the Tech Writer workflow. Use to draft the New column for each row of the Microcopy working Google Sheet for a Cin7 Jira issue, using only the issue, its parent, and the working file as sources.'
+name: 07-approve-microcopy-scope
+description: 'Task 7 of the Tech Writer workflow. Use to approve microcopy scope for a Cin7 Jira issue — drafting the New column for each row of the Microcopy working Google Sheet, using only the issue, its parent, and the working file as sources.'
 argument-hint: 'Jira issue ID'
 ---
 
-# Task 7 — Draft microcopy
+# Task 7 — Approve microcopy scope
 
 Open the Microcopy working file (Google Sheet) linked in the issue's **Working files**
 section. Using only the issue, its parent issue, and the working file as sources, draft the
