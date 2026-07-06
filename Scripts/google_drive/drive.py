@@ -11,6 +11,7 @@ Usage:
   python -B drive.py upload "C:/path/to/file.pdf"
     python -B drive.py upload "C:/path/to/file.pdf" --parent FOLDER_ID
     python -B drive.py upload "C:/path/to/file.pdf" --parent FOLDER_ID --name "Custom Name.pdf"
+  python -B drive.py write-markdown-to-doc DOC_ID --files path1.md [path2.md ...]
 
 Use append_rows() in scripts (not the Sheets API append directly) to add data rows without
 inheriting header formatting. See append_rows() docstring for details.
@@ -23,7 +24,11 @@ The -B flag suppresses __pycache__ creation.
 """
 
 import argparse
+import csv
 import os
+import re
+import urllib.parse
+from pathlib import Path
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -365,6 +370,533 @@ def upload_file(local_path, parent_id=None, name=None):
     return f['id']
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Markdown → Google Docs conversion
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Colour palette (RGB 0–1) for callout-block backgrounds
+_BG_NOTE         = {'red': 1.00, 'green': 0.95, 'blue': 0.80}   # amber
+_BG_WARNING      = {'red': 1.00, 'green': 0.80, 'blue': 0.80}   # red
+_BG_OVERVIEW     = {'red': 0.85, 'green': 0.92, 'blue': 1.00}   # blue
+_BG_SNIPPET      = {'red': 0.91, 'green': 0.96, 'blue': 0.91}   # green
+_BG_IMAGE        = {'red': 1.00, 'green': 1.00, 'blue': 0.60}   # yellow
+_BG_TABLE_HEADER = {'red': 0.90, 'green': 0.90, 'blue': 0.90}   # light grey
+
+_BLOCK_BG = {
+    'note':     _BG_NOTE,
+    'warning':  _BG_WARNING,
+    'overview': _BG_OVERVIEW,
+    'snippet':  _BG_SNIPPET,
+}
+
+# Compiled regex for inline markdown elements.
+# Groups: bold_italic, bold, italic, img_alt, img_src, link_text, link_url, code
+_INLINE_RE = re.compile(
+    r'\*\*\*(.+?)\*\*\*'              # 1: bold-italic  ***text***
+    r'|\*\*(.+?)\*\*'                  # 2: bold         **text**
+    r'|\*([^*\n]+?)\*'                # 3: italic       *text*
+    r'|!\[([^\]]*)\]\(([^)]*)\)'      # 4,5: image      ![alt](src)
+    r'|\[([^\]]+)\]\(([^)]*)\)'       # 6,7: link       [text](url)
+    r'|`([^`\n]+)`'                   # 8: inline code  `code`
+)
+
+
+def _load_kb_url_map(md_path):
+    """Load _Metadata/URLs.csv for the product that owns md_path.
+
+    Detects the product (Core or Omni) by finding that directory name in the
+    file path.  Returns {lowercase_filename_without_ext: zendesk_url}.
+    Returns {} if the CSV cannot be located.
+    """
+    parts = Path(md_path).resolve().parts
+    for i, part in enumerate(parts):
+        if part in ('Core', 'Omni'):
+            csv_path = Path(*parts[:i + 1]) / '_Metadata' / 'URLs.csv'
+            if csv_path.exists():
+                url_map = {}
+                with open(csv_path, newline='', encoding='utf-8') as f:
+                    for row in csv.DictReader(f):
+                        fname = (row.get('filename') or '').strip()
+                        url   = (row.get('url')      or '').strip()
+                        if fname and url:
+                            url_map[fname.lower()] = url
+                return url_map
+            break
+    return {}
+
+
+def _preprocess_markdown_links(content, url_map):
+    """Replace intra-KB markdown links [text](Filename.md) with Zendesk URLs.
+
+    Handles URL-encoded filenames (spaces as %20).  Links not found in url_map
+    are left unchanged.
+    """
+    if not url_map:
+        return content
+
+    def _replace(m):
+        text, href = m.group(1), m.group(2)
+        if not href.lower().endswith('.md'):
+            return m.group(0)
+        stem = urllib.parse.unquote(href)[:-3]   # strip .md
+        url = url_map.get(stem.lower())
+        return f'[{text}]({url})' if url else m.group(0)
+
+    return re.sub(r'\[([^\]]+)\]\(([^)]*)\)', _replace, content)
+
+
+def _parse_inline(text, para_bg=None):
+    """Parse inline markdown into a list of run dicts.
+
+    Each dict may contain: text (str), bold (bool), italic (bool),
+    link (str URL), bg_color (RGB dict), font (str family name).
+
+    Underscore emphasis (_italic_) is intentionally not supported —
+    underscores appear in KB filenames and MadCap variable names.
+    """
+    runs = []
+    last = 0
+    for m in _INLINE_RE.finditer(text):
+        if m.start() > last:
+            plain = text[last:m.start()]
+            if plain:
+                runs.append({'text': plain})
+        g = m.groups()
+        if g[0]:                     # ***bold-italic***
+            runs.append({'text': g[0], 'bold': True, 'italic': True})
+        elif g[1]:                   # **bold**
+            runs.append({'text': g[1], 'bold': True})
+        elif g[2]:                   # *italic*
+            runs.append({'text': g[2], 'italic': True})
+        elif g[3] is not None:       # ![alt](src)
+            src = g[4] or ''
+            fname = Path(urllib.parse.unquote(src)).name if src else 'image'
+            runs.append({'text': f'[Image: {fname}]', 'bg_color': _BG_IMAGE})
+        elif g[5]:                   # [text](url)
+            runs.append({'text': g[5], 'link': g[6] or ''})
+        elif g[7]:                   # `code`
+            runs.append({'text': g[7], 'font': 'Courier New'})
+        last = m.end()
+    if last < len(text):
+        remaining = text[last:]
+        if remaining:
+            runs.append({'text': remaining})
+    if not runs:
+        runs = [{'text': text}]
+    # Apply paragraph-level background to runs that don't have their own
+    if para_bg:
+        for r in runs:
+            if 'bg_color' not in r and r.get('text', '').strip():
+                r['bg_color'] = para_bg
+    return runs
+
+
+def _parse_markdown_to_paras(content):
+    """Parse markdown content into a flat list of paragraph dicts.
+
+    Each dict has:
+      style   – 'HEADING_1' .. 'HEADING_4' | 'NORMAL_TEXT'
+      runs    – list of run dicts from _parse_inline()
+      list    – None | 'BULLET' | 'NUMBERED'
+      nesting – int, 0-based indent level for list items
+      table   – None | list of {'cells': [...], 'is_header': bool}
+      para_bg – None | RGB dict for callout-block paragraph shading
+    """
+    lines = content.splitlines()
+    paras = []
+    i = 0
+    in_block = None
+    block_lines = []
+    pending = []        # accumulate multi-line paragraph text
+
+    def flush():
+        if not pending:
+            return
+        text = ' '.join(ln.strip() for ln in pending if ln.strip())
+        pending.clear()
+        if text:
+            paras.append({
+                'style': 'NORMAL_TEXT',
+                'runs': _parse_inline(text),
+                'list': None, 'nesting': 0,
+                'table': None, 'para_bg': None,
+            })
+
+    while i < len(lines):
+        line = lines[i]
+
+        # ── ::: block open ────────────────────────────────────────────────────
+        m = re.match(r'^:::([\w]+)(?:\s+src="[^"]*")?', line.strip())
+        if m and in_block is None:
+            flush()
+            in_block = m.group(1)
+            block_lines = []
+            i += 1
+            continue
+
+        # ── ::: block close ───────────────────────────────────────────────────
+        if line.strip() == ':::' and in_block is not None:
+            bg = _BLOCK_BG.get(in_block)
+            for bl in block_lines:
+                bl = bl.strip()
+                if not bl:
+                    continue
+                hm = re.match(r'^(#{1,4})\s+(.+)', bl)
+                if hm:
+                    runs = _parse_inline(hm.group(2).strip(), para_bg=bg)
+                    runs = [dict(r, bold=True) for r in runs]
+                else:
+                    runs = _parse_inline(bl, para_bg=bg)
+                paras.append({
+                    'style': 'NORMAL_TEXT', 'runs': runs,
+                    'list': None, 'nesting': 0,
+                    'table': None, 'para_bg': bg,
+                })
+            in_block = None
+            block_lines = []
+            i += 1
+            continue
+
+        if in_block is not None:
+            block_lines.append(line)
+            i += 1
+            continue
+
+        # ── HTML comments ─────────────────────────────────────────────────────
+        if line.strip().startswith('<!--'):
+            i += 1
+            continue
+
+        # ── Blank line ────────────────────────────────────────────────────────
+        if not line.strip():
+            flush()
+            i += 1
+            continue
+
+        # ── Headings (H1–H4) ─────────────────────────────────────────────────
+        hm = re.match(r'^(#{1,4})\s+(.+)', line)
+        if hm:
+            flush()
+            level = len(hm.group(1))
+            paras.append({
+                'style': f'HEADING_{level}',
+                'runs': _parse_inline(hm.group(2).strip()),
+                'list': None, 'nesting': 0,
+                'table': None, 'para_bg': None,
+            })
+            i += 1
+            continue
+
+        # ── Tables ────────────────────────────────────────────────────────────
+        if re.match(r'^\s*\|', line):
+            flush()
+            rows = []
+            while i < len(lines) and re.match(r'^\s*\|', lines[i]):
+                row = lines[i].strip()
+                if re.match(r'^\|[\s|:\-]+\|$', row):   # separator row
+                    if rows:
+                        rows[-1]['is_header'] = True
+                    i += 1
+                    continue
+                cells = [c.strip() for c in row.strip('|').split('|')]
+                rows.append({'cells': cells, 'is_header': False})
+                i += 1
+            if rows:
+                paras.append({
+                    'style': 'NORMAL_TEXT', 'runs': [],
+                    'list': None, 'nesting': 0,
+                    'table': rows, 'para_bg': None,
+                })
+            continue
+
+        # ── Bullet list items ─────────────────────────────────────────────────
+        lm = re.match(r'^(\s*)[-*]\s+(.+)', line)
+        if lm:
+            flush()
+            paras.append({
+                'style': 'NORMAL_TEXT',
+                'runs': _parse_inline(lm.group(2).strip()),
+                'list': 'BULLET',
+                'nesting': len(lm.group(1)) // 2,
+                'table': None, 'para_bg': None,
+            })
+            i += 1
+            continue
+
+        # ── Numbered list items ───────────────────────────────────────────────
+        lm = re.match(r'^(\s*)\d+[.)]\s+(.+)', line)
+        if lm:
+            flush()
+            paras.append({
+                'style': 'NORMAL_TEXT',
+                'runs': _parse_inline(lm.group(2).strip()),
+                'list': 'NUMBERED',
+                'nesting': len(lm.group(1)) // 2,
+                'table': None, 'para_bg': None,
+            })
+            i += 1
+            continue
+
+        # ── Regular paragraph text (accumulate multi-line) ───────────────────
+        pending.append(line)
+        i += 1
+
+    flush()
+    return paras
+
+
+def _markdown_to_doc_requests(paras, tab_id=None, start_index=1):
+    """Convert paragraph dicts to Google Docs batchUpdate request lists.
+
+    Returns (text_requests, format_requests).  Always execute text_requests
+    first in a separate batchUpdate call — format_requests reference character
+    indices that only exist after all text has been inserted.
+    """
+    text_reqs, fmt_reqs = [], []
+    idx = start_index
+
+    def _loc(i):
+        loc = {'index': i}
+        if tab_id:
+            loc['tabId'] = tab_id
+        return loc
+
+    def _rng(s, e):
+        r = {'startIndex': s, 'endIndex': e}
+        if tab_id:
+            r['tabId'] = tab_id
+        return r
+
+    def ins(text):
+        nonlocal idx
+        if not text:
+            return idx, idx
+        s = idx
+        text_reqs.append({'insertText': {'location': _loc(idx), 'text': text}})
+        idx += len(text)
+        return s, idx
+
+    def set_para_style(s, e, style):
+        fmt_reqs.append({
+            'updateParagraphStyle': {
+                'range': _rng(s, e),
+                'paragraphStyle': {'namedStyleType': style},
+                'fields': 'namedStyleType',
+            }
+        })
+
+    def set_para_shading(s, e, bg):
+        fmt_reqs.append({
+            'updateParagraphStyle': {
+                'range': _rng(s, e),
+                'paragraphStyle': {
+                    'shading': {'backgroundColor': {'color': {'rgbColor': bg}}}
+                },
+                'fields': 'shading',
+            }
+        })
+
+    def set_text_style(s, e, bold=None, italic=None, link=None, bg=None, font=None):
+        style, fields = {}, []
+        if bold   is not None: style['bold']   = bold;   fields.append('bold')
+        if italic is not None: style['italic'] = italic; fields.append('italic')
+        if link   is not None: style['link'] = {'url': link}; fields.append('link')
+        if bg is not None:
+            style['backgroundColor'] = {'color': {'rgbColor': bg}}
+            fields.append('backgroundColor')
+        if font is not None:
+            style['weightedFontFamily'] = {'fontFamily': font}
+            fields.append('weightedFontFamily')
+        if not fields:
+            return
+        fmt_reqs.append({
+            'updateTextStyle': {
+                'range': _rng(s, e),
+                'textStyle': style,
+                'fields': ','.join(fields),
+            }
+        })
+
+    for para in paras:
+        # ── Table: text-based rendering ───────────────────────────────────────
+        if para.get('table'):
+            for row in para['table']:
+                row_text = ' | '.join(row['cells']) + '\n'
+                rs, re_ = ins(row_text)
+                set_para_style(rs, re_, 'NORMAL_TEXT')
+                if row.get('is_header'):
+                    set_text_style(rs, re_, bold=True, bg=_BG_TABLE_HEADER)
+            continue
+
+        # ── Paragraph with inline runs ────────────────────────────────────────
+        runs = para.get('runs', [])
+        if not runs:
+            ps, pe = ins('\n')
+            set_para_style(ps, pe, 'NORMAL_TEXT')
+            continue
+
+        para_start = idx
+        for run in runs:
+            rt = run.get('text', '')
+            if not rt:
+                continue
+            rs, re_ = ins(rt)
+            set_text_style(
+                rs, re_,
+                bold=run.get('bold'),
+                italic=run.get('italic'),
+                link=run.get('link'),
+                bg=run.get('bg_color'),
+                font=run.get('font'),
+            )
+        ins('\n')
+        para_end = idx
+
+        set_para_style(para_start, para_end, para['style'])
+        if para.get('para_bg'):
+            set_para_shading(para_start, para_end, para['para_bg'])
+
+        if para.get('list'):
+            preset = (
+                'NUMBERED_DECIMAL_ALPHA_ROMAN'
+                if para['list'] == 'NUMBERED'
+                else 'BULLET_DISC_CIRCLE_SQUARE'
+            )
+            fmt_reqs.append({
+                'createParagraphBullets': {
+                    'range': _rng(para_start, para_end),
+                    'bulletPreset': preset,
+                }
+            })
+            nesting = para.get('nesting', 0)
+            if nesting > 0:
+                fmt_reqs.append({
+                    'updateParagraphStyle': {
+                        'range': _rng(para_start, para_end),
+                        'paragraphStyle': {
+                            'indentStart': {
+                                'magnitude': 18.0 * (nesting + 1),
+                                'unit': 'PT',
+                            }
+                        },
+                        'fields': 'indentStart',
+                    }
+                })
+
+    return text_reqs, fmt_reqs
+
+
+def _find_or_create_tab(docs_service, doc_id, tab_name):
+    """Find a named tab in a Google Doc or create it.
+
+    Returns (tab_id, start_index).  start_index is the character position at
+    which new content should be inserted:
+      - New tab:      1  (the tab body is empty)
+      - Existing tab: position just before the trailing body newline (append)
+    """
+    doc = docs_service.documents().get(
+        documentId=doc_id,
+        fields='tabs(tabProperties)',
+    ).execute(num_retries=5)
+
+    for tab in doc.get('tabs', []):
+        props = tab.get('tabProperties', {})
+        if props.get('title') == tab_name:
+            tab_id = props['tabId']
+            doc_full = docs_service.documents().get(
+                documentId=doc_id,
+                includeTabsContent=True,
+                fields='tabs(tabProperties,documentTab.body.content)',
+            ).execute(num_retries=5)
+            for t in doc_full.get('tabs', []):
+                if t.get('tabProperties', {}).get('tabId') == tab_id:
+                    content = (
+                        t.get('documentTab', {})
+                         .get('body', {})
+                         .get('content', [])
+                    )
+                    end_idx = content[-1].get('endIndex', 2) if content else 2
+                    return tab_id, max(1, end_idx - 1)
+            return tab_id, 1
+
+    # Tab not found — create it
+    result = docs_service.documents().batchUpdate(
+        documentId=doc_id,
+        body={'requests': [{'createTab': {'tabProperties': {'title': tab_name}}}]},
+    ).execute(num_retries=5)
+
+    new_tab_id = (
+        (result.get('replies') or [{}])[0]
+        .get('createTab', {})
+        .get('tabProperties', {})
+        .get('tabId')
+    )
+    if not new_tab_id:
+        # Re-read to find the newly created tab
+        doc = docs_service.documents().get(
+            documentId=doc_id,
+            fields='tabs(tabProperties)',
+        ).execute(num_retries=5)
+        for tab in doc.get('tabs', []):
+            if tab.get('tabProperties', {}).get('title') == tab_name:
+                new_tab_id = tab['tabProperties']['tabId']
+                break
+    return new_tab_id, 1
+
+
+def _batch_update_doc(docs_service, doc_id, requests, chunk_size=500):
+    """Execute Docs batchUpdate requests in sequential chunks of chunk_size."""
+    for i in range(0, len(requests), chunk_size):
+        docs_service.documents().batchUpdate(
+            documentId=doc_id,
+            body={'requests': requests[i:i + chunk_size]},
+        ).execute(num_retries=5)
+
+
+def write_markdown_to_doc(doc_id, file_paths):
+    """Write one or more markdown KB files to named tabs in a Google Doc.
+
+    Each file is written to a tab named after the filename (without .md).
+    If the tab already exists, new content is appended; otherwise a new tab is
+    created.  Intra-KB links are resolved to Zendesk URLs via the product's
+    _Metadata/URLs.csv, auto-detected from the file path.
+
+    Args:
+        doc_id:     Google Doc ID.
+        file_paths: List of paths to .md files (str or Path objects).
+    """
+    docs_service = get_docs_service()
+    for fp in file_paths:
+        p = Path(fp)
+        if not p.exists():
+            print(f"[WARN] File not found: {fp} — skipping")
+            continue
+
+        tab_name = p.stem
+        print(f"Processing '{p.name}' → tab '{tab_name}' …")
+
+        content = p.read_text(encoding='utf-8')
+        url_map = _load_kb_url_map(str(p.resolve()))
+        content = _preprocess_markdown_links(content, url_map)
+        paras = _parse_markdown_to_paras(content)
+
+        tab_id, start_index = _find_or_create_tab(docs_service, doc_id, tab_name)
+
+        text_reqs, fmt_reqs = _markdown_to_doc_requests(
+            paras, tab_id=tab_id, start_index=start_index,
+        )
+
+        if not text_reqs:
+            print(f"  No content generated for '{p.name}' — skipping")
+            continue
+
+        _batch_update_doc(docs_service, doc_id, text_reqs)
+        if fmt_reqs:
+            _batch_update_doc(docs_service, doc_id, fmt_reqs)
+
+        print(f"  Done — {len(text_reqs)} text requests, {len(fmt_reqs)} format requests")
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Google Drive utility')
     subparsers = parser.add_subparsers(dest='command')
@@ -389,6 +921,16 @@ if __name__ == '__main__':
     rd = subparsers.add_parser('read-doc', help='Print the plain text of a Google Doc')
     rd.add_argument('doc_id_or_url', help='Google Doc ID or full URL')
 
+    wmd = subparsers.add_parser(
+        'write-markdown-to-doc',
+        help='Write markdown KB file(s) to named tabs in a Google Doc',
+    )
+    wmd.add_argument('doc_id', help='Google Doc ID')
+    wmd.add_argument(
+        '--files', nargs='+', required=True, metavar='FILE',
+        help='One or more paths to .md files',
+    )
+
     args = parser.parse_args()
 
     if args.command == 'create-folder':
@@ -406,6 +948,8 @@ if __name__ == '__main__':
         else:
             doc_id = raw
         print(read_doc(doc_id))
+    elif args.command == 'write-markdown-to-doc':
+        write_markdown_to_doc(args.doc_id, args.files)
     else:
         parser.print_help()
 
