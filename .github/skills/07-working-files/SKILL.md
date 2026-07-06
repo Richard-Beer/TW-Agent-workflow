@@ -39,7 +39,7 @@ Add a new **Working files** section to the issue description. Use markdown hyper
 that labels are inline and clickable in Jira.
 
 ```
-## Working files
+### Working files
 
 - [Microcopy](https://docs.google.com/spreadsheets/d/<sheet_id>/edit)
 - Help center (markdown KB repo)

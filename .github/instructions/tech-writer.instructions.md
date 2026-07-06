@@ -11,7 +11,12 @@ Every task run receives:
 - **Jira issue ID**
 - **Task** — one of the numbered tasks defined by the skills in `.github/skills/`
 
-Perform the specified task on the relevant Jira issue.
+Before doing anything else, confirm the supplied issue is a **story**. If it is any other
+issue type (epic, subtask, task, bug, etc.), stop immediately and tell the user:
+
+> This workflow only runs on story-type issues. Please supply a story ID.
+
+Otherwise, perform the specified task on the relevant Jira issue.
 
 ## Task index
 
@@ -64,7 +69,7 @@ plus strikethrough:
 Required format:
 
 ```
-**TW Agent status**
+### TW Agent status
 
 - [TO DO] 1 - Categorization (AKA Begin)
 - [TO DO] 2 - Context
@@ -92,7 +97,6 @@ After completing any task (or group of tasks in one run), immediately update thi
 
 ## Response format
 
-End every task response with:
+End every task response with a single line:
 
-- **Steps completed (by last prompt):** [brief summary of what was completed]
-- **Next step in sequence:** [the next numbered task or "Stop and wait for manual trigger"]
+`Last: [task name] / Next: [task name or "Stop — manual trigger"]`

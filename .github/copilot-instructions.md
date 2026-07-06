@@ -55,7 +55,8 @@ Read and write Jira through the Atlassian tools by capability, not by a fixed to
 
 ## Jira writing guidelines
 
-- Use **bold** for headings inside Jira issue descriptions (not markdown `##` headings).
+- Use `###` (H3) for top-level section headings in Jira issue descriptions; use `####` (H4)
+  for sub-headings within a section. Do not use H1 or H2. Bold is for inline emphasis only.
 - Do not use section breaks in Jira issue descriptions.
 - In markdown tables sent to Jira, wrap header cell text in `**bold**` explicitly — the
   markdown header syntax (`|---|`) does not render as bold in Jira's ADF.

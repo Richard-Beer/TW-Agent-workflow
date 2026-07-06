@@ -78,7 +78,7 @@ Report any additional articles found that were not already identified in Stage 2
 Add two new sections to the issue description:
 
 ```
-**UX change summary (detailed)**
+### UX change summary (detailed)
 
 | Change | Type | Details |
 |---|---|---|
@@ -93,7 +93,7 @@ Add two new sections to the issue description:
 - [List of sources consulted, e.g. Figma file, microcopy document, linked issue]
 - [Note any expected sources that were missing, e.g. "Figma file: not found"]
 
-**Scope**
+### Scope
 
 | Article | Action | Rationale |
 |---|---|---|

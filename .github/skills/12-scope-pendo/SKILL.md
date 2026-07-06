@@ -23,9 +23,9 @@ Add a new section called **Pendo strategy** to the issue description. Use the fo
 template:
 
 ```
-**Pendo strategy**
+### Pendo strategy
 
-**High-level summary**
+#### High-level summary
 
 **Goal:** [One-sentence summary of what the full guide set should achieve]
 
@@ -35,7 +35,7 @@ template:
 
 **Audience:** [Who should see the guides, in practical terms]
 
-**Guide map**
+#### Guide map
 
 **Guide count:** [Total number of individual guides planned]
 

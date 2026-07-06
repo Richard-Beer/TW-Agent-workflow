@@ -22,11 +22,11 @@ Each child issue is named after the deliverable it covers (e.g. `Help center`,
 Set the child issue's description to the following:
 
 ```
-**Requirements**
+### Requirements
 
 [Requirement text from parent's Requirements section for this deliverable]
 
-**Working file**
+### Working file
 
 [Working file reference from parent's Working files section for this deliverable]
 ```
