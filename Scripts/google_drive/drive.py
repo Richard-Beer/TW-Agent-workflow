@@ -543,12 +543,14 @@ def _parse_markdown_to_paras(content):
                     continue
                 hm = re.match(r'^(#{1,4})\s+(.+)', bl)
                 if hm:
+                    num_hashes = len(hm.group(1))
+                    style = f'HEADING_{num_hashes - 1}' if num_hashes > 1 else 'TITLE'
                     runs = _parse_inline(hm.group(2).strip(), para_bg=bg)
-                    runs = [dict(r, bold=True) for r in runs]
                 else:
+                    style = 'NORMAL_TEXT'
                     runs = _parse_inline(bl, para_bg=bg)
                 paras.append({
-                    'style': 'NORMAL_TEXT', 'runs': runs,
+                    'style': style, 'runs': runs,
                     'list': None, 'nesting': 0,
                     'table': None, 'para_bg': bg,
                 })
@@ -655,8 +657,12 @@ def _markdown_to_doc_requests(paras, tab_id=None, start_index=1):
     Returns (text_requests, format_requests).  Always execute text_requests
     first in a separate batchUpdate call — format_requests reference character
     indices that only exist after all text has been inserted.
+
+    Paragraph-level formatting (named style, shading, bullets) is always applied
+    before text-level formatting (bold, italic, link) in the returned list, so
+    that the named style cannot overwrite inline bold/italic set on runs.
     """
-    text_reqs, fmt_reqs = [], []
+    text_reqs, para_fmt_reqs, txt_fmt_reqs = [], [], []
     idx = start_index
 
     def _loc(i):
@@ -681,7 +687,7 @@ def _markdown_to_doc_requests(paras, tab_id=None, start_index=1):
         return s, idx
 
     def set_para_style(s, e, style):
-        fmt_reqs.append({
+        para_fmt_reqs.append({
             'updateParagraphStyle': {
                 'range': _rng(s, e),
                 'paragraphStyle': {'namedStyleType': style},
@@ -690,7 +696,7 @@ def _markdown_to_doc_requests(paras, tab_id=None, start_index=1):
         })
 
     def set_para_shading(s, e, bg):
-        fmt_reqs.append({
+        para_fmt_reqs.append({
             'updateParagraphStyle': {
                 'range': _rng(s, e),
                 'paragraphStyle': {
@@ -713,7 +719,7 @@ def _markdown_to_doc_requests(paras, tab_id=None, start_index=1):
             fields.append('weightedFontFamily')
         if not fields:
             return
-        fmt_reqs.append({
+        txt_fmt_reqs.append({
             'updateTextStyle': {
                 'range': _rng(s, e),
                 'textStyle': style,
@@ -766,7 +772,7 @@ def _markdown_to_doc_requests(paras, tab_id=None, start_index=1):
                 if para['list'] == 'NUMBERED'
                 else 'BULLET_DISC_CIRCLE_SQUARE'
             )
-            fmt_reqs.append({
+            para_fmt_reqs.append({
                 'createParagraphBullets': {
                     'range': _rng(para_start, para_end),
                     'bulletPreset': preset,
@@ -774,7 +780,7 @@ def _markdown_to_doc_requests(paras, tab_id=None, start_index=1):
             })
             nesting = para.get('nesting', 0)
             if nesting > 0:
-                fmt_reqs.append({
+                para_fmt_reqs.append({
                     'updateParagraphStyle': {
                         'range': _rng(para_start, para_end),
                         'paragraphStyle': {
@@ -787,7 +793,7 @@ def _markdown_to_doc_requests(paras, tab_id=None, start_index=1):
                     }
                 })
 
-    return text_reqs, fmt_reqs
+    return text_reqs, para_fmt_reqs + txt_fmt_reqs
 
 
 def _find_or_create_tab(docs_service, doc_id, tab_name):
