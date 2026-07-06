@@ -6,30 +6,28 @@ argument-hint: 'Jira issue ID'
 
 # Task 9 — Scope microcopy
 
-Gather and analyze available resources to define the microcopy requirements for the issue.
+Map the UI changes for this issue to specific microcopy requirements.
 
-## Discovery
+## Starting point
 
-Collect relevant materials from the following sources only:
+Read the `### UX change summary (detailed)` section from the issue description. If this
+task is running on a child issue, read it from the parent issue description instead.
 
-- The issue, its parent, its children, and any issues linked to any of those
-- External files (e.g. Figma designs, Confluence pages, Google Drive docs) that are
-  explicitly referenced in or attached to one of the above issues
+This section, written in Task 3, is the authoritative list of UI changes for this issue.
+Use it as the basis for identifying microcopy requirements — do not re-examine sources to
+determine what changed.
 
-When evaluating the available sources, prefer in this order:
+If you need the exact current text of specific microcopy items and it is not captured in
+the UX change summary, you may consult the sources listed in that section's **Sources**
+list. Do not browse third-party apps independently.
 
-1. **Ideal:** Figma designs, Claude mock-ups, or interactive prototypes
-2. **Acceptable:** Screenshots or written explanation of the UI changes
-
-If only a written explanation is available, note this in the microcopy summary added to
-the issue description.
-
-Do not browse third-party apps independently to find additional resources.
+If the issue description does not contain a `### UX change summary (detailed)` section,
+note this in the microcopy summary and proceed using the available issue context.
 
 ## Analysis
 
-Using the gathered resources and the product model for the relevant product (Core or Omni),
-identify microcopy requirements by examining the UI changes involved. Use the product
+Using the UX change summary and the product model for the relevant product (Core or Omni),
+identify microcopy requirements from the UI changes described. Use the product
 model's navigation architecture to anchor each affected page to its level-1 and level-2
 location before drilling down to the specific page or section.
 

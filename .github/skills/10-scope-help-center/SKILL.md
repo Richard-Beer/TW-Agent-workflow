@@ -1,33 +1,26 @@
 ---
 name: 10-scope-help-center
-description: 'Task 10 of the Tech Writer workflow. Use to produce a detailed UX change summary and a targeted + broad review of Core/Omni markdown knowledge base articles for a Cin7 Jira issue, recording UX change summary and Scope tables in the issue description.'
+description: 'Task 10 of the Tech Writer workflow. Use to do a targeted + broad review of Core/Omni markdown knowledge base articles for a Cin7 Jira issue, recording a Scope table in the issue description.'
 argument-hint: 'Jira issue ID'
 ---
 
 # Task 10 — Scope help center
 
-Gather and analyze available resources to define what help center changes are required for
-this issue.
+Using the pre-written UX change summary, identify what help center changes are required
+for this issue.
 
-## Stage 1 — UX change summary (detailed)
+## Starting point
 
-Collect relevant materials from the following sources only:
+Read the `### UX change summary (detailed)` section from the issue description. If this
+task is running on a child issue, read it from the parent issue description instead.
 
-- The issue, its parent, its children, and any issues linked to any of those
-- External files (e.g. Figma designs, Confluence pages, Google Drive docs) explicitly
-  referenced in or attached to one of the above issues
+This section, written in Task 3, is the authoritative list of UI changes for this issue.
+Do not re-examine sources to determine what changed.
 
-Using the gathered resources, produce a detailed summary of all UX changes:
+If the issue description does not contain a `### UX change summary (detailed)` section,
+note this in the Scope table rationale and proceed using the available issue context.
 
-- **Visible changes:** design changes (new/changed/removed pages, buttons, toggles,
-  fields, or other interactive UI elements) and microcopy changes (labels, messages,
-  tooltips, placeholders)
-- **Functional changes:** behind-the-scenes logic changes (e.g. different journals
-  created, data mapping changes, workflow changes, new validations)
-
-Note explicitly if a Figma file or microcopy document could not be found.
-
-## Stage 2 — Targeted article review
+## Stage 1 — Targeted article review
 
 Determine whether the relevant knowledge base is Core or Omni (or both) based on the
 product context.
@@ -60,7 +53,7 @@ needs to be:
 
 Provide a rationale for each proposed change.
 
-## Stage 3 — Broad KB sweep
+## Stage 2 — Broad KB sweep
 
 Search across all articles in the relevant knowledge base markdown folder (`Core/` or
 `Omni/`) for:
@@ -75,24 +68,9 @@ Report any additional articles found that were not already identified in Stage 2
 
 ## Output
 
-Add two new sections to the issue description:
+Add a new section to the issue description:
 
 ```
-### UX change summary (detailed)
-
-| Change | Type | Details |
-|---|---|---|
-| **Visible changes** | | |
-| [Element or page] | [Added/Changed/Removed] | [Description] |
-| ... | | |
-| **Functional changes** | | |
-| [Behaviour or logic] | [Added/Changed/Removed] | [Description] |
-| ... | | |
-
-**Sources:**
-- [List of sources consulted, e.g. Figma file, microcopy document, linked issue]
-- [Note any expected sources that were missing, e.g. "Figma file: not found"]
-
 ### Scope
 
 | Article | Action | Rationale |
@@ -105,5 +83,5 @@ Add two new sections to the issue description:
 | ... | | |
 ```
 
-Primary updates are articles within the most relevant subtopics (Stage 2). Secondary
-updates are articles found in the broad KB sweep (Stage 3).
+Primary updates are articles within the most relevant subtopics (Stage 1). Secondary
+updates are articles found in the broad KB sweep (Stage 2).
