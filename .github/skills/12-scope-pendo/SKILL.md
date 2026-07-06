@@ -6,9 +6,6 @@ argument-hint: 'Jira issue ID'
 
 # Task 12 — Scope Pendo
 
-Use the **Shared model context activation** rule in the repository instructions, and read
-`Models/Pendo model.md`.
-
 Read the **Requirements** section from the issue's description, specifically the Pendo
 guides entry. Based on the context of the issue and those requirements, produce a Pendo
 strategy.

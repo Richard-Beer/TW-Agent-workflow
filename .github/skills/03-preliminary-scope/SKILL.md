@@ -9,9 +9,6 @@ argument-hint: 'Jira issue ID'
 Based on the Context, identify roughly what deliverables Technical Writing needs to
 produce.
 
-Use the **Shared model context activation** rule in the repository instructions before
-scoping deliverables.
-
 Deliverables may include:
 
 - **Help center** — creating, updating, deleting, or otherwise changing help center

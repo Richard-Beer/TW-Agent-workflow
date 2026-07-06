@@ -24,9 +24,9 @@ The -B flag suppresses __pycache__ creation.
 
 import argparse
 import os
-import pickle
 
 from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
@@ -46,19 +46,18 @@ SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets',
     'https://www.googleapis.com/auth/documents',
 ]
-TOKEN_PATH = os.path.join(os.path.dirname(__file__), 'token.pickle')
+TOKEN_PATH = os.path.join(os.path.dirname(__file__), 'token.json')
 
 
 def _get_creds():
     creds = None
     if os.path.exists(TOKEN_PATH):
-        with open(TOKEN_PATH, 'rb') as f:
-            creds = pickle.load(f)
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
-            with open(TOKEN_PATH, 'wb') as f:
-                pickle.dump(creds, f)
+            with open(TOKEN_PATH, 'w') as f:
+                f.write(creds.to_json())
         else:
             raise RuntimeError("No valid credentials found. Run setup_auth.py first.")
     return creds
@@ -72,6 +71,27 @@ def get_sheets_service():
     return build('sheets', 'v4', credentials=_get_creds())
 
 
+def get_docs_service():
+    return build('docs', 'v1', credentials=_get_creds())
+
+
+def read_doc(doc_id):
+    """Read a Google Doc and return its plain text content."""
+    service = get_docs_service()
+    doc = service.documents().get(documentId=doc_id).execute(num_retries=5)
+    lines = []
+    for block in doc.get('body', {}).get('content', []):
+        para = block.get('paragraph')
+        if not para:
+            continue
+        text = ''.join(
+            el.get('textRun', {}).get('content', '')
+            for el in para.get('elements', [])
+        )
+        lines.append(text)
+    return ''.join(lines)
+
+
 def create_folder(name, parent_id=None):
     """Create a folder in Drive. Returns the folder ID."""
     service = get_service()
@@ -81,7 +101,7 @@ def create_folder(name, parent_id=None):
     }
     if parent_id:
         metadata['parents'] = [parent_id]
-    folder = service.files().create(body=metadata, fields='id, name').execute()
+    folder = service.files().create(body=metadata, fields='id, name').execute(num_retries=5)
     url = f"https://drive.google.com/drive/folders/{folder['id']}"
     print(f"Created folder '{folder['name']}' — id: {folder['id']} — url: {url}")
     return folder['id']
@@ -96,7 +116,7 @@ def create_doc(name, parent_id=None):
     }
     if parent_id:
         metadata['parents'] = [parent_id]
-    doc = service.files().create(body=metadata, fields='id, name').execute()
+    doc = service.files().create(body=metadata, fields='id, name').execute(num_retries=5)
     url = f"https://docs.google.com/document/d/{doc['id']}/edit"
     print(f"Created doc '{doc['name']}' — id: {doc['id']} — url: {url}")
     return doc['id'], url
@@ -111,7 +131,7 @@ def create_sheet(name, parent_id=None):
     }
     if parent_id:
         metadata['parents'] = [parent_id]
-    sheet = service.files().create(body=metadata, fields='id, name').execute()
+    sheet = service.files().create(body=metadata, fields='id, name').execute(num_retries=5)
     sheet_id = sheet['id']
     url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/edit"
 
@@ -245,7 +265,7 @@ def create_sheet(name, parent_id=None):
     get_sheets_service().spreadsheets().batchUpdate(
         spreadsheetId=sheet_id,
         body={'requests': requests},
-    ).execute()
+    ).execute(num_retries=5)
 
     print(f"Created sheet '{sheet['name']}' — id: {sheet_id} — url: {url}")
     return sheet_id, url
@@ -269,7 +289,7 @@ def append_rows(sheet_id, rows, sheet_tab_id=0):
         valueInputOption='RAW',
         insertDataOption='INSERT_ROWS',
         body={'values': rows},
-    ).execute()
+    ).execute(num_retries=5)
 
     updated = result.get('updates', {})
     print(f"Appended {updated.get('updatedRows', 0)} row(s) to {updated.get('updatedRange', '?')}")
@@ -305,7 +325,7 @@ def append_rows(sheet_id, rows, sheet_tab_id=0):
                     'fields': 'userEnteredFormat.backgroundColor,userEnteredFormat.textFormat,userEnteredFormat.verticalAlignment,userEnteredFormat.horizontalAlignment,userEnteredFormat.wrapStrategy',
                 }
             }]},
-        ).execute()
+        ).execute(num_retries=5)
         print("Formatting reset to plain.")
 
 
@@ -325,7 +345,7 @@ def draft_rows(sheet_id, cell_values):
     result = svc.spreadsheets().values().batchUpdate(
         spreadsheetId=sheet_id,
         body=body,
-    ).execute()
+    ).execute(num_retries=5)
     print(f"Updated {result.get('totalUpdatedCells', 0)} cells")
 
 
@@ -340,7 +360,7 @@ def upload_file(local_path, parent_id=None, name=None):
     if parent_id:
         metadata['parents'] = [parent_id]
     media = MediaFileUpload(local_path, resumable=True)
-    f = service.files().create(body=metadata, media_body=media, fields='id, name').execute()
+    f = service.files().create(body=metadata, media_body=media, fields='id, name').execute(num_retries=5)
     print(f"Uploaded '{f['name']}' — id: {f['id']}")
     return f['id']
 
@@ -366,6 +386,9 @@ if __name__ == '__main__':
     up.add_argument('--parent', help='Parent folder ID', default=None)
     up.add_argument('--name', help='Name for the file in Drive', default=None)
 
+    rd = subparsers.add_parser('read-doc', help='Print the plain text of a Google Doc')
+    rd.add_argument('doc_id_or_url', help='Google Doc ID or full URL')
+
     args = parser.parse_args()
 
     if args.command == 'create-folder':
@@ -376,6 +399,13 @@ if __name__ == '__main__':
         create_sheet(args.name, args.parent)
     elif args.command == 'upload':
         upload_file(args.path, args.parent, args.name)
+    elif args.command == 'read-doc':
+        raw = args.doc_id_or_url
+        if '/d/' in raw:
+            doc_id = raw.split('/d/')[1].split('/')[0]
+        else:
+            doc_id = raw
+        print(read_doc(doc_id))
     else:
         parser.print_help()
 

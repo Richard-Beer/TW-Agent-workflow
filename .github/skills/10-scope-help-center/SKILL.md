@@ -11,9 +11,6 @@ this issue.
 
 ## Stage 1 — UX change summary (detailed)
 
-Before collecting sources, use the **Shared model context activation** rule in the
-repository instructions.
-
 Collect relevant materials from the following sources only:
 
 - The issue, its parent, its children, and any issues linked to any of those

@@ -1,18 +1,9 @@
-# Cin7 Technical Writer agent — repository instructions
+# Cin7 TW agents — shared repository instructions
 
-This repository powers a **Technical Writer** agent that performs a fixed sequence of
-tasks on Cin7 Jira issues. The agent (`.github/agents/Tech Writer.agent.md`) is a thin
-orchestrator; each task lives in its own skill under `.github/skills/`. These
-instructions hold the conventions that apply across every task.
-
-## Inputs
-
-Every task run receives:
-
-- **Jira issue ID**
-- **Task** — one of the numbered tasks defined by the skills in `.github/skills/`
-
-Perform the specified task on the relevant Jira issue.
+These instructions hold the shared conventions that apply across all agents in this
+repository — script and path rules, Jira reading and writing standards, product model
+activation, and due-date handling. Agent-specific workflows, inputs, and response
+formats live in each agent's local instruction sheet under `.github/instructions/`.
 
 ## Script and path conventions
 
@@ -31,19 +22,36 @@ Perform the specified task on the relevant Jira issue.
 
 Model files describe the products' structure and vocabulary:
 
+- `Models/Article model.md` — article types, content types, and standard sections by product
 - `Models/Core model.md` — Cin7 Core navigation architecture (level-1 and level-2 locations)
 - `Models/Omni model.md` — Cin7 Omni navigation architecture (level-1 and level-2 locations)
 - `Models/Pendo model.md` — Pendo guide strategies, guide types, and content element vocabulary
 - `Models/Core help center model.md` — Cin7 Core help center topic hierarchy
 
-**Shared model context activation** — when a task needs product model context:
+**Model loading — at the start of every task:**
 
-1. Determine product context from the issue: `Core`, `Omni`, or `Unknown`.
-2. If `Core`, read `Models/Core model.md` **and** `Models/Core help center model.md`.
-3. If `Omni`, read `Models/Omni model.md`.
-4. If `Unknown`, do not guess. Use `Unknown` for product-specific details.
+1. Always read `Models/Pendo model.md` and `Models/Article model.md`.
+2. Determine product context from the issue or source material: `Core`, `Omni`, or `Unknown`.
+3. If `Core`, read `Models/Core model.md` and `Models/Core help center model.md`.
+4. If `Omni`, read `Models/Omni model.md`.
+5. If `Unknown`, do not load either product model and do not guess product-specific details.
 
-Tasks may additionally require `Models/Pendo model.md` when noted.
+## Working with Jira
+
+Read and write Jira through the Atlassian tools by capability, not by a fixed tool name:
+
+- **Reading issue content** — fetch the issue by its key to get the authoritative, full
+  description before acting on it. Do not rely on search results as the source of an
+  issue's description: search returns summarized or truncated snippets and is only for
+  discovery (finding related issues, children, or linked issues).
+- **Before any description edit** — re-read the issue immediately beforehand and base your
+  edit on that latest version. Humans review and edit descriptions at the manual-trigger
+  checkpoints, so acting on a stale copy risks overwriting their changes.
+- **On a write failure** — if setting the issue type, transitioning, editing the
+  description, or creating a child issue fails (for example, a permission error or an
+  invalid transition), do not retry blindly or guess an alternative. Add a
+  `[TW Agent] <operation> failed` note to the issue description, report it in the response,
+  and stop.
 
 ## Jira writing guidelines
 
@@ -51,44 +59,6 @@ Tasks may additionally require `Models/Pendo model.md` when noted.
 - Do not use section breaks in Jira issue descriptions.
 - In markdown tables sent to Jira, wrap header cell text in `**bold**` explicitly — the
   markdown header syntax (`|---|`) does not render as bold in Jira's ADF.
-
-## Workflow tracking in the Jira description
-
-Keep a **TW Agent status** section at the top of the Jira issue description so anyone can
-see status at a glance. Color coding is unreliable in Jira markdown, so use text labels
-plus strikethrough:
-
-- Completed steps: prefix with `[DONE]` and strike through the full line with `~~...~~`
-- Remaining steps: prefix with `[TO DO]` and do not strike through
-
-Required format:
-
-```
-**TW Agent status**
-
-- [TO DO] 1 - Categorization (AKA Begin)
-- [TO DO] 2 - Context
-- [TO DO] 3 - Preliminary scope
-- [TO DO] 4 - Structural review
-- [TO DO] 5 - Structuring
-- [TO DO] 6 - Cleaning
-- [TO DO] 7 - Working files
-- [TO DO] 8 - Populate children
-- [TO DO] 9 - Scope microcopy
-- [TO DO] 10 - Scope help center
-- [TO DO] 11 - Approve scope
-- [TO DO] 12 - Scope Pendo
-- [TO DO] 13 - Draft microcopy
-- [TO DO] 14 - Create help center PR
-- [TO DO] 15 - Publish to knowledge base
-```
-
-After completing any task (or group of tasks in one run), immediately update this section:
-
-- Convert each completed step line to `[DONE]` and strike it through
-- Leave all remaining steps as `[TO DO]`
-- Keep step numbering unchanged
-- Keep this section at the top of the description after each update
 
 ## Due date handling
 
@@ -100,9 +70,3 @@ issue's planned release date.
 - If the release date cannot be identified confidently, leave the Due date blank
 - Do not infer from vague language (for example, "soon", "next sprint", or quarter-only)
 
-## Response format
-
-End every task response with:
-
-- **Steps completed (by last prompt):** [brief summary of what was completed]
-- **Next step in sequence:** [the next numbered task or "Stop and wait for manual trigger"]
