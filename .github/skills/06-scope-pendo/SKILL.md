@@ -29,9 +29,9 @@ template:
 
 **Goal:** [One-sentence summary of what the full guide set should achieve]
 
-**Strategy:** [One of the three strategies from the Pendo model]
+**Strategy:** [One of the three strategies from the TW-Context Pendo files]
 
-**Guide areas:** [Use navigation labels from the product model]
+**Guide areas:** [Use navigation labels from the TW-Context product navigation files]
 
 **Audience:** [Who should see the guides, in practical terms]
 
@@ -40,10 +40,10 @@ template:
 **Guide count:** [Total number of individual guides planned]
 
 - **Guide:** [Guide name]
-   - **Type:** [Guide type from the Pendo model]
+   - **Type:** [Guide type from the TW-Context Pendo files]
    - **Audience:** [Effective audience for this guide]
    - **Trigger:** [What event/action causes this guide to appear]
-   - **Location:** [Navigation label from the product model; `Unknown` if not confirmed]
+   - **Location:** [Navigation label from the TW-Context product navigation files; `Unknown` if not confirmed]
    - **Selector:** [Primary target selector; `Unknown` if not confirmed]
    - **Tone/language:** [Brief style summary, not actual microcopy]
    - **Links to other guides:** [Entry/follow-up/fallback/mutually exclusive — include only when Strategy is "Multiple guides with structural links"]
@@ -64,9 +64,9 @@ Before publishing the description, run this quality check internally (do not add
 checklist to the issue description):
 
 - [ ] Guide count matches the number of listed guides
-- [ ] Strategy is one of the three types defined in the Pendo model
-- [ ] Every guide type matches a type defined in the Pendo model
-- [ ] Guide areas and Location values use navigation labels from the product model
+- [ ] Strategy is one of the three types defined in the TW-Context Pendo files
+- [ ] Every guide type matches a type defined in the TW-Context Pendo files
+- [ ] Guide areas and Location values use navigation labels from the TW-Context product navigation files
 - [ ] Every guide includes type, audience, trigger, location, selector, and tone/language
 - [ ] Multi-step guides include a step sequence
 - [ ] Links to other guides is included only when Strategy is "Multiple guides with structural links"

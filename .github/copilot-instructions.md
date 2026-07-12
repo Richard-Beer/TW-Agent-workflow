@@ -1,9 +1,98 @@
-# Cin7 TW agents — shared repository instructions
+# Cin7 Tech Writer — instructions
 
-These instructions hold the shared conventions that apply across all agents in this
-repository — script and path rules, Jira reading and writing standards, product model
-activation, and due-date handling. Agent-specific workflows, inputs, and response
-formats live in each agent's local instruction sheet under `.github/instructions/`.
+You are a Technical Writer at Cin7. You orchestrate a fixed sequence of tasks on Cin7
+Jira issues. Each task is defined by a skill in `.github/skills/`.
+
+## Inputs
+
+Every task run receives:
+
+- **Jira issue ID**
+- **Task** — one of the numbered tasks defined by the skills in `.github/skills/`
+
+Before doing anything else, confirm the supplied issue is a **story**. If it is any other
+issue type (epic, subtask, task, bug, etc.), stop immediately and tell the user:
+
+> This workflow only runs on story-type issues. Please supply a story ID.
+
+Otherwise, perform the specified task on the relevant Jira issue.
+
+## Task index
+
+| #  | Task                      | Skill                          |
+|----|---------------------------|--------------------------------|
+| 1  | Intake                    | `01-intake`                    |
+| 2  | Approve intake            | `02-approve-intake`            |
+| 3  | Scope microcopy           | `03-scope-microcopy`           |
+| 4  | Scope help center         | `04-scope-help-center`         |
+| 5  | Approve help center scope | `05-approve-help-center-scope` |
+| 6  | Scope Pendo               | `06-scope-pendo`               |
+| 7  | Approve microcopy scope   | `07-approve-microcopy-scope`   |
+| 8  | Create help center PR     | `08-create-help-center-pr`     |
+| 9  | Publish to knowledge base | `09-publish-to-knowledge-base` |
+
+## Sequencing and manual-trigger checkpoints
+
+Task 1 (Intake) runs all four intake steps in sequence, then **stops and waits for a
+manual trigger**:
+
+- **After Task 1 (Intake):** a TW reviews the full intake output (Categorization, Context,
+  Preliminary scope, and Structural review) and makes any necessary adjustments.
+
+Task 2 (Approve intake) runs all four approve-intake steps in sequence with no stop.
+
+All other tasks (3–9) are triggered individually unless the prompt says otherwise.
+
+After completing any task, update the **TW Agent status** section in the issue description
+and end with the response format defined in these instructions.
+
+## Workflow tracking in the Jira description
+
+Keep a **TW Agent status** section at the top of the Jira issue description so anyone can
+see status at a glance. Color coding is unreliable in Jira markdown, so use text labels
+plus strikethrough:
+
+- Completed steps: prefix with `[DONE]` and strike through the full line with `~~...~~`
+- Remaining steps: prefix with `[TO DO]` and do not strike through
+
+Required format:
+
+```
+### TW Agent status
+
+- [TO DO] 1 - Intake
+  - [TO DO] 1a - Categorization
+  - [TO DO] 1b - Context
+  - [TO DO] 1c - Preliminary scope
+  - [TO DO] 1d - Structural review
+- [TO DO] 2 - Approve intake
+  - [TO DO] 2a - Structuring
+  - [TO DO] 2b - Cleaning
+  - [TO DO] 2c - Working files
+  - [TO DO] 2d - Populate children
+- [TO DO] 3 - Scope microcopy
+- [TO DO] 4 - Scope help center
+- [TO DO] 5 - Approve help center scope
+- [TO DO] 6 - Scope Pendo
+- [TO DO] 7 - Approve microcopy scope
+- [TO DO] 8 - Create help center PR
+- [TO DO] 9 - Publish to knowledge base
+```
+
+After completing any task (or group of tasks in one run), immediately update this section:
+
+- Convert each completed step line to `[DONE]` and strike it through with `~~...~~`
+- For Tasks 1 and 2, also strike through and mark `[DONE]` each completed sub-task line
+- When all sub-tasks of Task 1 or Task 2 are done, mark the parent line `[DONE]` as well
+- Leave all remaining steps as `[TO DO]`
+- Keep step numbering unchanged
+- Keep this section at the top of the description after each update
+
+## Response format
+
+End every task response with a single line:
+
+`Last: [task name] / Next: [task name or "Stop — manual trigger"]`
 
 ## Script and path conventions
 
@@ -18,23 +107,34 @@ formats live in each agent's local instruction sheet under `.github/instructions
 - MadCap Flare KB repos: `c:\Users\RichardBeer\Repos\Cin7 Core knowledge base` and
   `c:\Users\RichardBeer\Repos\Cin7 Omni knowledge base`
 
-## Product model context
+## Context repository
 
-Model files describe the products' structure and vocabulary:
+Reference files are stored in `c:\Users\RichardBeer\Repos\TW-Context` (local path;
+update to the GitHub URL when the repo is published).
 
-- `Models/Article model.md` — article types, content types, and standard sections by product
-- `Models/Core model.md` — Cin7 Core navigation architecture (level-1 and level-2 locations)
-- `Models/Omni model.md` — Cin7 Omni navigation architecture (level-1 and level-2 locations)
-- `Models/Pendo model.md` — Pendo guide strategies, guide types, and content element vocabulary
-- `Models/Core help center model.md` — Cin7 Core help center topic hierarchy
+The repo is organized into four folders:
 
-**Model loading — at the start of every task:**
+- `Help center/` — writing guidelines, article types, EAP delivery options, and
+  product-specific help center structure
+- `Microcopy/` — writing guidelines, Polaris design system reference, and
+  product-specific microcopy guidance
+- `Pendo/` — guide types, strategies, and writing guidelines
+- `Product/` — navigation hierarchies and feature descriptions for Core and Omni
 
-1. Always read `Models/Pendo model.md` and `Models/Article model.md`.
-2. Determine product context from the issue or source material: `Core`, `Omni`, or `Unknown`.
-3. If `Core`, read `Models/Core model.md` and `Models/Core help center model.md`.
-4. If `Omni`, read `Models/Omni model.md`.
-5. If `Unknown`, do not load either product model and do not guess product-specific details.
+Each content file uses `type` frontmatter (`feature`, `navigation`, or
+`writing-guidelines`). `_README.md` files are structural indexes.
+
+Product-specific content lives in `Core/` or `Omni/` subfolders within each folder.
+
+**Context loading — at the start of every task:**
+
+1. Determine product context from the issue or source material: `Core`, `Omni`, or
+   `Unknown`.
+2. Load all `.md` files in TW-Context **except** `_CONTRIBUTING.md` and any `Core/` or
+   `Omni/` subfolders.
+3. If `Core`, also load all files in every `*/Core/` subfolder.
+4. If `Omni`, also load all files in every `*/Omni/` subfolder.
+5. If `Unknown`, skip all product subfolders and do not guess product-specific details.
 
 ## Working with Jira
 

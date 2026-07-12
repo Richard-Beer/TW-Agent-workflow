@@ -26,9 +26,9 @@ note this in the microcopy summary and proceed using the available issue context
 
 ## Analysis
 
-Using the UX change summary and the product model for the relevant product (Core or Omni),
+Using the UX change summary and the TW-Context product navigation files,
 identify microcopy requirements from the UI changes described. Use the product
-model's navigation architecture to anchor each affected page to its level-1 and level-2
+navigation files to anchor each affected page to its level-1 and level-2
 location before drilling down to the specific page or section.
 
 Categorize affected pages as follows:
@@ -43,7 +43,7 @@ Categorize affected pages as follows:
 For each updated or new page, apply the following template — repeat it unchanged for every
 page; do not vary the structure:
 
-> **Page:** [level-1 > level-2 > page name, from the product model — e.g. `Sales > Sales Orders > Filters panel`]
+> **Page:** [level-1 > level-2 > page name, from TW-Context — e.g. `Sales > Sales Orders > Filters panel`]
 > - **New microcopy needed:** [describe each item, or "None"]
 > - **Existing microcopy to update:** [describe each item, or "None"]
 > - **Existing microcopy to delete:** [describe each item, or "None"]
