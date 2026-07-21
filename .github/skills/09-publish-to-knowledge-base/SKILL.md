@@ -55,7 +55,7 @@ local KB repo filesystem; it does not push or commit anything.
 ## What the script does
 
 - Writes `.htm` files to
-  `c:\Users\RichardBeer\Repos\Cin7 Core knowledge base\Content\Resources\Topics\` (or Omni
+  `c:\Users\RichardBeer\Repos\Cin7-Core-knowledge-base\Content\Resources\Topics\` (or Omni
   equivalent)
 - Converts markdown syntax back to MadCap Flare XML elements (`<MadCap:variable>`,
   `<MadCap:snippetBlock>`, `<div class="note/warning/overview">`, etc.)

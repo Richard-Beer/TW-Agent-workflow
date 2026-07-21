@@ -10,10 +10,11 @@ Every task run receives:
 - **Jira issue ID**
 - **Task** — one of the numbered tasks defined by the skills in `.github/skills/`
 
-Before doing anything else, confirm the supplied issue is a **story**. If it is any other
-issue type (epic, subtask, task, bug, etc.), stop immediately and tell the user:
+Before doing anything else, confirm the supplied issue is a **story-level issue type** —
+that is, a story, doc request, or task. If it is any other issue type (epic, subtask,
+theme, bug, etc.), stop immediately and tell the user:
 
-> This workflow only runs on story-type issues. Please supply a story ID.
+> This workflow only runs on story-level issues (story, doc request, or task). Please supply a valid issue ID.
 
 Otherwise, perform the specified task on the relevant Jira issue.
 
@@ -97,15 +98,15 @@ End every task response with a single line:
 ## Script and path conventions
 
 - Google Drive helper: `Scripts/google_drive/drive.py`. Run it from that folder, e.g.
-  `cd "c:\Users\RichardBeer\Repos\TW Tech Writer agent\Scripts\google_drive"; python -B drive.py ...`
+  `cd "c:\Users\RichardBeer\Repos\TW-Tech-Writer-agent\Scripts\google_drive"; python -B drive.py ...`
 - Always run Python with `python -B` (suppresses `__pycache__` creation).
 - To add rows to a Google Sheet, use `append_rows()` from `drive.py` — never the Sheets
   API `append` call directly (it inherits formatting from the nearest populated row).
 - TW team Google Drive parent folder ID: `1YhXSSv6EPb_-td-bajDE2ev3P-RLZNNL`
 - Markdown knowledge base repo: `c:\Users\RichardBeer\Repos\TW-Knowledge-bases-markdown`
   (Core articles in `Core/*.md`, Omni articles in `Omni/*.md`)
-- MadCap Flare KB repos: `c:\Users\RichardBeer\Repos\Cin7 Core knowledge base` and
-  `c:\Users\RichardBeer\Repos\Cin7 Omni knowledge base`
+- MadCap Flare KB repos: `c:\Users\RichardBeer\Repos\Cin7-Core-knowledge-base` and
+  `c:\Users\RichardBeer\Repos\Cin7-Omni-knowledge-base`
 
 ## Context repository
 

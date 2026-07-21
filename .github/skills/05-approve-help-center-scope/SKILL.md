@@ -61,7 +61,7 @@ description and stop.
 Run `write-markdown-to-doc` via `drive.py`, passing all resolved file paths in one call:
 
 ```
-cd "c:\Users\RichardBeer\Repos\TW Tech Writer agent\Scripts\google_drive"
+cd "c:\Users\RichardBeer\Repos\TW-Tech-Writer-agent\Scripts\google_drive"
 python -B drive.py write-markdown-to-doc <DOC_ID> --files <full_path_1> [<full_path_2> ...]
 ```
 

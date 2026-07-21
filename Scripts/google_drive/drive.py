@@ -900,6 +900,10 @@ def write_markdown_to_doc(doc_id, file_paths):
             continue
 
         tab_name = p.stem
+        if len(tab_name) > 50:
+            truncated = tab_name[:50]
+            last_space = truncated.rfind(' ')
+            tab_name = truncated[:last_space] if last_space > 0 else truncated
         print(f"Processing '{p.name}' → tab '{tab_name}' …")
 
         content = p.read_text(encoding='utf-8')

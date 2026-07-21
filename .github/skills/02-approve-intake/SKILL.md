@@ -70,7 +70,7 @@ create a folder named after the issue key inside the TW team Google Drive folder
 (`1YhXSSv6EPb_-td-bajDE2ev3P-RLZNNL`):
 
 ```
-cd "c:\Users\RichardBeer\Repos\TW Tech Writer agent\Scripts\google_drive"
+cd "c:\Users\RichardBeer\Repos\TW-Tech-Writer-agent\Scripts\google_drive"
 python -B drive.py create-folder "OTW-XXXX" --parent 1YhXSSv6EPb_-td-bajDE2ev3P-RLZNNL
 ```
 
