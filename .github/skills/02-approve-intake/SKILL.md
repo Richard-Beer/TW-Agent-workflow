@@ -27,6 +27,27 @@ identifier:
 | Pendo guides | `Pendo` |
 | EAP | `EAP` |
 
+### How to create child issues
+
+Child issues are always subtasks of the current story-level issue. For each in-scope
+deliverable, call `jira_create_issue` with:
+
+- `project_key`: `OTW`
+- `issue_type`: `Subtask`
+- `summary`: the child issue name from the table above (e.g. `Help center`)
+- `additional_fields`: `{"parent": "<current issue key>"}` — the key of the issue you
+  are currently processing (e.g. `OTW-1234`)
+
+Do not set a description when creating the child issue — descriptions are populated in
+Step 2d.
+
+### How to set parent assignments
+
+To assign or update the parent on an existing issue, call `jira_update_issue` with:
+
+- `issue_key`: the issue to reparent
+- `additional_fields`: `{"parent": "OTW-XXXX"}` — the target parent issue key
+
 ### Parent epic assignment
 
 After structuring, set the parent epic for the issue (or new epics/stories created) based
@@ -36,7 +57,8 @@ on the issue's category (determined in Task 1):
 - Assign the new epic's parent to:
   - `OTW-1616` — if category is **Release**
   - `OTW-1617` — if category is **Foundations** or **Enablement**
-- Assign each new child story's parent to the new epic.
+- Assign each new child story's parent to the new epic (set at creation time via
+  `additional_fields: {"parent": "<new epic key>"}` in `jira_create_issue`).
 
 **If the issue stays as a story:**
 - Assign the story's parent epic to:
