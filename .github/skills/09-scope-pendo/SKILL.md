@@ -29,7 +29,7 @@ template:
 
 **Goal:** [One-sentence summary of what the full guide set should achieve]
 
-**Strategy:** [One of the three strategies from the TW-Context Pendo files]
+**Strategy:** [One of the three strategies from the TW-Context Pendo guidelines]
 
 **Guide areas:** [Use navigation labels from the TW-Context product navigation files]
 
@@ -40,7 +40,7 @@ template:
 **Guide count:** [Total number of individual guides planned]
 
 - **Guide:** [Guide name]
-   - **Type:** [Guide type from the TW-Context Pendo files]
+   - **Type:** [Guide type from the TW-Context Pendo guidelines]
    - **Audience:** [Effective audience for this guide]
    - **Trigger:** [What event/action causes this guide to appear]
    - **Location:** [Navigation label from the TW-Context product navigation files; `Unknown` if not confirmed]
@@ -64,8 +64,8 @@ Before publishing the description, run this quality check internally (do not add
 checklist to the issue description):
 
 - [ ] Guide count matches the number of listed guides
-- [ ] Strategy is one of the three types defined in the TW-Context Pendo files
-- [ ] Every guide type matches a type defined in the TW-Context Pendo files
+- [ ] Strategy is one of the three types defined in the TW-Context Pendo guidelines
+- [ ] Every guide type matches a type defined in the TW-Context Pendo guidelines
 - [ ] Guide areas and Location values use navigation labels from the TW-Context product navigation files
 - [ ] Every guide includes type, audience, trigger, location, selector, and tone/language
 - [ ] Multi-step guides include a step sequence

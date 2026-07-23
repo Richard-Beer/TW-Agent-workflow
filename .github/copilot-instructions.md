@@ -115,27 +115,25 @@ update to the GitHub URL when the repo is published).
 
 The repo is organized into four folders:
 
-- `Help center/` — writing guidelines, article types, EAP delivery options, and
-  product-specific help center structure
-- `Microcopy/` — writing guidelines, Polaris design system reference, and
-  product-specific microcopy guidance
-- `Pendo/` — guide types, strategies, and writing guidelines
-- `Product/` — navigation hierarchies and feature descriptions for Core and Omni
+- `Help center/` — editorial guidelines, structural guidelines, EAP delivery options, and
+  product-specific help center TOC structure
+- `Microcopy/` — microcopy guidelines and email guidelines
+- `Pendo/` — guide structure, setup, and writing guidelines
+- `Product/` — navigation hierarchies for Core and Omni
 
-Each content file uses `type` frontmatter (`feature`, `navigation`, or
-`writing-guidelines`). `_README.md` files are structural indexes.
+Product-specific files are prefixed with the product name (e.g. `Core navigation.md`,
+`Omni navigation.md`). There are no subfolders — all files sit at the root of each folder.
 
-Product-specific content lives in `Core/` or `Omni/` subfolders within each folder.
+`_README.md` files are structural indexes.
 
 **Context loading — at the start of every task:**
 
 1. Determine product context from the issue or source material: `Core`, `Omni`, or
    `Unknown`.
-2. Load all `.md` files in TW-Context **except** `_CONTRIBUTING.md` and any `Core/` or
-   `Omni/` subfolders.
-3. If `Core`, also load all files in every `*/Core/` subfolder.
-4. If `Omni`, also load all files in every `*/Omni/` subfolder.
-5. If `Unknown`, skip all product subfolders and do not guess product-specific details.
+2. Load all `.md` files in TW-Context **except** `_CONTRIBUTING.md` and `_README.md` files.
+3. If `Core`, skip files prefixed with `Omni`.
+4. If `Omni`, skip files prefixed with `Core`.
+5. If `Unknown`, load all files (both Core and Omni navigation files are included).
 
 ## Working with Jira
 
