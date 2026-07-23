@@ -98,7 +98,7 @@ End every task response with a single line:
 ## Script and path conventions
 
 - Google Drive helper: `Scripts/google_drive/drive.py`. Run it from that folder, e.g.
-  `cd "c:\Users\RichardBeer\Repos\TW-Tech-Writer-agent\Scripts\google_drive"; python -B drive.py ...`
+  `cd "c:\Users\RichardBeer\Repos\TW-Agent-workflow\Scripts\google_drive"; python -B drive.py ...`
 - Always run Python with `python -B` (suppresses `__pycache__` creation).
 - To add rows to a Google Sheet, use `append_rows()` from `drive.py` — never the Sheets
   API `append` call directly (it inherits formatting from the nearest populated row).
