@@ -35,14 +35,18 @@ identifier:
 
 ### How to create child issues
 
-Child issues are always subtasks of the current story-level issue. For each in-scope
-deliverable, call `jira_create_issue` with:
+Child issues are always subtasks of the current story-level issue. Before creating any
+child issues, read the parent issue to get its assignee's `accountId`.
+
+For each in-scope deliverable, call `jira_create_issue` with:
 
 - `project_key`: `OTW`
 - `issue_type`: `Sub-task`
 - `summary`: the child issue name from the table above (e.g. `Help center`)
 - `additional_fields`: `{"parent": "<current issue key>"}` — the key of the issue you
-  are currently processing (e.g. `OTW-1234`)
+  are currently processing (e.g. `OTW-1234`). If the parent issue has an assignee, also
+  include `"assignee": {"accountId": "<parent assignee accountId>"}` in this object. If
+  the parent is unassigned, omit the `assignee` field entirely.
 
 Do not set a description when creating the child issue — descriptions are populated in
 Step 2d.
