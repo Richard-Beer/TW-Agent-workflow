@@ -25,12 +25,12 @@ Otherwise, perform the specified task on the relevant Jira issue.
 | 1  | Intake                    | `01-intake`                    |
 | 2  | Approve intake            | `02-approve-intake`            |
 | 3  | Scope microcopy           | `03-scope-microcopy`           |
-| 4  | Scope help center         | `04-scope-help-center`         |
-| 5  | Approve help center scope | `05-approve-help-center-scope` |
-| 6  | Scope Pendo               | `06-scope-pendo`               |
-| 7  | Approve microcopy scope   | `07-approve-microcopy-scope`   |
-| 8  | Create help center PR     | `08-create-help-center-pr`     |
-| 9  | Publish to knowledge base | `09-publish-to-knowledge-base` |
+| 4  | Approve microcopy scope   | `04-approve-microcopy-scope`   |
+| 5  | Scope help center         | `05-scope-help-center`         |
+| 6  | Approve help center scope | `06-approve-help-center-scope` |
+| 7  | Create help center PR     | `07-create-help-center-pr`     |
+| 8  | Publish to knowledge base | `08-publish-to-knowledge-base` |
+| 9  | Scope Pendo               | `09-scope-pendo`               |
 
 ## Sequencing and manual-trigger checkpoints
 
@@ -72,12 +72,12 @@ Required format:
   - [TO DO] 2c - Working files
   - [TO DO] 2d - Populate children
 - [TO DO] 3 - Scope microcopy
-- [TO DO] 4 - Scope help center
-- [TO DO] 5 - Approve help center scope
-- [TO DO] 6 - Scope Pendo
-- [TO DO] 7 - Approve microcopy scope
-- [TO DO] 8 - Create help center PR
-- [TO DO] 9 - Publish to knowledge base
+- [TO DO] 4 - Approve microcopy scope
+- [TO DO] 5 - Scope help center
+- [TO DO] 6 - Approve help center scope
+- [TO DO] 7 - Create help center PR
+- [TO DO] 8 - Publish to knowledge base
+- [TO DO] 9 - Scope Pendo
 ```
 
 After completing any task (or group of tasks in one run), immediately update this section:
@@ -145,6 +145,10 @@ Read and write Jira through the Atlassian tools by capability, not by a fixed to
   description before acting on it. Do not rely on search results as the source of an
   issue's description: search returns summarized or truncated snippets and is only for
   discovery (finding related issues, children, or linked issues).
+- **Never derive content from search results** — search results truncate descriptions and
+  omit formatting. When you need the description of an issue (the current issue, a parent,
+  a linked issue, or a child), always fetch that issue directly by key. This is required
+  even when search has already returned the issue in a result set.
 - **Before any description edit** — re-read the issue immediately beforehand and base your
   edit on that latest version. Humans review and edit descriptions at the manual-trigger
   checkpoints, so acting on a stale copy risks overwriting their changes.

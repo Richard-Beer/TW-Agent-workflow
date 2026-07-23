@@ -10,23 +10,24 @@ Map the UI changes for this issue to specific microcopy requirements.
 
 ## Starting point
 
-Read the `### UX change summary (detailed)` section from the issue description. If this
-task is running on a child issue, read it from the parent issue description instead.
+Read the `### UX change (detailed)` or `### Problem (detailed)` section from the issue
+description (the heading depends on the issue category). If this task is running on a
+child issue, read it from the parent issue description instead.
 
-This section, written in Task 3, is the authoritative list of UI changes for this issue.
+This section, written in Task 1, is the authoritative list of UI changes for this issue.
 Use it as the basis for identifying microcopy requirements — do not re-examine sources to
 determine what changed.
 
 If you need the exact current text of specific microcopy items and it is not captured in
-the UX change summary, you may consult the sources listed in that section's **Sources**
+the detailed summary, you may consult the sources listed in that section’s **Sources**
 list. Do not browse third-party apps independently.
 
-If the issue description does not contain a `### UX change summary (detailed)` section,
-note this in the microcopy summary and proceed using the available issue context.
+If the issue description does not contain either section, note this in the microcopy
+summary and proceed using the available issue context.
 
 ## Analysis
 
-Using the UX change summary and the TW-Context product navigation files,
+Using the detailed summary and the TW-Context product navigation files,
 identify microcopy requirements from the UI changes described. Use the product
 navigation files to anchor each affected page to its level-1 and level-2
 location before drilling down to the specific page or section.
@@ -62,9 +63,9 @@ seven columns:
 | Location | The app page or area where the microcopy appears | Agent |
 | Element | The specific UI element (e.g. button label, tooltip, field placeholder) | Agent |
 | Current | The existing text if you are confident of it; `UNKNOWN` if you are unsure; `NEW` if the element is new and has no existing microcopy | Agent |
-| New | Leave blank for now (populated in Task 7) | Agent (leave blank) |
+| New | Leave blank for now (populated in Task 4) | Agent (leave blank) |
 | Notes | Any additional context, such as whether the item is new, updated, or deleted | Agent |
-| Questions/Comments | Feedback or open questions for Product/Design (optional; typically completed after Task 7) | Manual |
+| Questions/Comments | Feedback or open questions for Product/Design (optional; typically completed after Task 4) | Manual |
 | QA | QA sign-off or review status (optional; typically completed post-draft) | Manual |
 
 Populate Location, Element, Current, and Notes columns only; leave New,

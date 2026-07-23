@@ -1,10 +1,10 @@
 ---
-name: 09-publish-to-knowledge-base
-description: 'Task 9 (final) of the Tech Writer workflow. Use to convert updated markdown articles back to MadCap Flare HTM files in the local Core/Omni KB repos via the conversion script. Writes to the filesystem only — no commit or push.'
+name: 08-publish-to-knowledge-base
+description: 'Task 8 of the Tech Writer workflow. Use to convert updated markdown articles back to MadCap Flare HTM files in the local Core/Omni KB repos via the conversion script. Writes to the filesystem only — no commit or push.'
 argument-hint: 'Jira issue ID'
 ---
 
-# Task 9 — Publish to knowledge base
+# Task 8 — Publish to knowledge base
 
 Convert the updated markdown articles back to MadCap Flare HTM files and write them to the
 local knowledge base repository.
@@ -15,7 +15,7 @@ local knowledge base repository.
 ## When to run this task
 
 Run this task after the Help center markdown work is complete and reviewed — typically
-after Task 8 (Create help center PR) has been raised. This task writes directly to the
+after Task 7 (Create help center PR) has been raised. This task writes directly to the
 local KB repo filesystem; it does not push or commit anything.
 
 ## Steps

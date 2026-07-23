@@ -15,6 +15,12 @@ Run the following four steps in sequence without stopping between them.
 Apply the restructuring advice from the **Structuring advice** section — for example,
 promoting the issue to an epic, creating child issues, or adding subtasks as recommended.
 
+### Single-deliverable rule
+
+If only **one** deliverable is in scope (e.g. microcopy only, or help center only), do
+**not** create child issues. All work is managed at the story level. Skip the child-issue
+creation steps below and proceed to Step 2b.
+
 ### Child issue names
 
 When creating child issues, use exactly these names — no parent issue key prefix, no other
@@ -33,7 +39,7 @@ Child issues are always subtasks of the current story-level issue. For each in-s
 deliverable, call `jira_create_issue` with:
 
 - `project_key`: `OTW`
-- `issue_type`: `Subtask`
+- `issue_type`: `Sub-task`
 - `summary`: the child issue name from the table above (e.g. `Help center`)
 - `additional_fields`: `{"parent": "<current issue key>"}` — the key of the issue you
   are currently processing (e.g. `OTW-1234`)
@@ -102,7 +108,7 @@ Deliverable type matches the deliverable name from the **Requirements** section 
 `Microcopy`, `Pendo guides`, `EAP`).
 
 Do not create a Help center Google Doc. If Help center is in scope, add a placeholder line
-to the **Working files** section: `Help center (markdown KB repo)`.
+to the **Working files** section: `Help center`.
 
 Use `create-sheet` for the **Microcopy** deliverable:
 
@@ -117,18 +123,21 @@ python -B drive.py create-doc "OTW-XXXX - [Deliverable type]" --parent <folder_i
 ```
 
 Add a new **Working files** section to the issue description. Use markdown hyperlinks so
-that labels are inline and clickable in Jira.
+that labels are inline and clickable in Jira. The first line is always the working folder
+link.
 
 ```
 ### Working files
 
+- [Working folder](https://drive.google.com/drive/folders/<folder_id>)
 - [Microcopy](https://docs.google.com/spreadsheets/d/<sheet_id>/edit)
-- Help center (markdown KB repo)
+- Help center
 - [Pendo guides](https://docs.google.com/document/d/<doc_id>/edit)
 ```
 
-Include only lines for in-scope deliverables. Keep the Help center line as plain text (not
-a hyperlink) until the branch is created in **Task 5 — Approve help center scope**.
+Include only lines for in-scope deliverables (plus the working folder, which is always
+included). Keep the Help center line as plain text (not a hyperlink) until the doc or
+branch is created in **Task 6 — Approve help center scope**.
 
 Once you complete the Working files step, continue to Step 2d.
 
@@ -145,7 +154,8 @@ Each child issue is named after the deliverable it covers (e.g. `Help center`,
 `Microcopy`). Use this name to locate:
 
 - The matching requirement from the parent issue's **Requirements** section
-- The matching working file entry from the parent issue's **Working files** section
+- The matching working file entry from the parent issue's **Working files** section (do
+  **not** include the Working folder link — that belongs on the parent issue only)
 
 ### Update the child description
 

@@ -1,6 +1,6 @@
 ---
 name: 01-intake
-description: 'Task 1 of the Tech Writer workflow. Use to run the full intake sequence for a Cin7 Jira issue: categorize the issue, write a Context description, produce a detailed UX change summary with preliminary deliverable scope, and complete a structural review. Stops and waits after completion for a TW to review.'
+description: 'Task 1 of the Tech Writer workflow. Use to run the full intake sequence for a Cin7 Jira issue: categorize the issue, write a Context description, produce a detailed change summary with preliminary deliverable scope, and complete a structural review. Stops and waits after completion for a TW to review.'
 argument-hint: 'Jira issue ID'
 ---
 
@@ -73,12 +73,12 @@ template:
 
 **Release**
 - Summary of release (2–3 sentences describing the release and its rationale)
-- UX change summary (high-level; likely impact on the user experience, such as new pages,
-  new or changed UI elements, and so on)
+- UX change (summary) (high-level; likely impact on the user experience, such as new
+  pages, new or changed UI elements, and so on)
 - Request (original) (explicit Technical Writing requests only — do not infer)
 
 **Foundations and Enablement**
-- UX change summary (high-level; the underlying issue or opportunity and expected
+- Problem (summary) (high-level; the underlying issue or opportunity and expected
   user-visible impact)
 - Request (original) (explicit Technical Writing requests only — do not infer)
 
@@ -88,17 +88,17 @@ Once you complete the Context, continue to Step 1c.
 
 ## Step 1c — Preliminary scope
 
-### Stage 1 — UX change summary (detailed)
+### Stage 1 — Detailed summary
 
 Collect relevant materials from the following sources only:
 
 - The issue, its parent, its children, and any issues linked to any of those
-- External files (e.g. Figma designs, Confluence pages, Google Drive docs) explicitly
-  referenced in or attached to one of the above issues
+- External files (e.g. Figma designs, Claude prototypes, Confluence pages, Google Drive
+  docs) explicitly referenced in or attached to one of the above issues
 
 Using the gathered resources, produce a detailed summary of all UX changes.
 
-The UX change summary covers only changes to the product application itself — that is,
+The detailed summary covers only changes to the product application itself — that is,
 changes a user would encounter while using the software. Record only:
 
 - **Visible changes:** design changes (new/changed/removed pages, buttons, toggles,
@@ -111,12 +111,18 @@ Do not include TW deliverables in this summary. Content such as help center arti
 Pendo guides, or microcopy documents is produced as a result of this analysis (see
 Stage 2) and is not a UX change.
 
-Note explicitly if a Figma file or microcopy document could not be found.
+Note explicitly if a design file (Figma or prototype) or microcopy document could not be
+found.
 
-Add the UX change summary to the issue description in the following format:
+The section heading depends on the issue category (determined in Step 1a):
+
+- **Release** → `### UX change (detailed)`
+- **Foundations or Enablement** → `### Problem (detailed)`
+
+Add the detailed summary to the issue description in the following format:
 
 ```
-### UX change summary (detailed)
+### [UX change (detailed) or Problem (detailed)]
 
 | Change | Type | Details |
 |---|---|---|
@@ -128,13 +134,13 @@ Add the UX change summary to the issue description in the following format:
 | ... | | |
 
 **Sources:**
-- [List of sources consulted, e.g. Figma file, microcopy document, linked issue]
-- [Note any expected sources that were missing, e.g. "Figma file: not found"]
+- [List of sources consulted, e.g. Figma file, prototype, microcopy document, linked issue]
+- [Note any expected sources that were missing, e.g. "Design file: not found"]
 ```
 
 ### Stage 2 — Deliverable identification
 
-Based on the UX change summary above, identify roughly what deliverables Technical Writing
+Based on the detailed summary above, identify roughly what deliverables Technical Writing
 needs to produce.
 
 Deliverables may include:
@@ -164,9 +170,18 @@ Once you complete the Preliminary scope, continue to Step 1d.
 Based on the Requirements, decide whether this issue type (e.g. epic, story, subtask)
 should be changed. Note that stories should be completable within one or two sprints.
 Consider what child issues (if any) would be required, which will likely align with the
-deliverables identified in the Request (refined). Use the following default names for child
-issues — use them exactly as shown, without prefixing the parent issue key or any other
-identifier:
+deliverables identified in the Request (refined).
+
+### Single-deliverable rule
+
+If only **one** deliverable is in scope, recommend **no child issues** — all work should
+be managed at the story level. Only recommend child issues when two or more deliverables
+are in scope.
+
+### Child issue names
+
+When recommending child issues, use the following default names — use them exactly as
+shown, without prefixing the parent issue key or any other identifier:
 
 | Deliverable | Child issue name |
 |---|---|

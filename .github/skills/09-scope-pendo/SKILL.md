@@ -1,10 +1,10 @@
 ---
-name: 06-scope-pendo
-description: 'Task 6 of the Tech Writer workflow. Use to produce a strategic Pendo guide plan for a Cin7 Jira issue using the Pendo model, and add a Pendo strategy section to the issue description. Strategic only — no final guide copy.'
+name: 09-scope-pendo
+description: 'Task 9 of the Tech Writer workflow. Use to produce a strategic Pendo guide plan for a Cin7 Jira issue using the Pendo model, and add a Pendo strategy section to the issue description. Strategic only — no final guide copy.'
 argument-hint: 'Jira issue ID'
 ---
 
-# Task 6 — Scope Pendo
+# Task 9 — Scope Pendo
 
 Read the **Requirements** section from the issue's description, specifically the Pendo
 guides entry. Based on the context of the issue and those requirements, produce a Pendo

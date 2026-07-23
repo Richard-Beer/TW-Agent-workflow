@@ -1,24 +1,39 @@
 ---
-name: 04-scope-help-center
-description: 'Task 4 of the Tech Writer workflow. Use to do a targeted + broad review of Core/Omni markdown knowledge base articles for a Cin7 Jira issue, recording a Scope table in the issue description.'
+name: 05-scope-help-center
+description: 'Task 5 of the Tech Writer workflow. Use to do a targeted + broad review of Core/Omni markdown knowledge base articles for a Cin7 Jira issue, recording a Help center scope table in the issue description.'
 argument-hint: 'Jira issue ID'
 ---
 
-# Task 4 — Scope help center
+# Task 5 — Scope help center
 
-Using the pre-written UX change summary, identify what help center changes are required
+Using the pre-written detailed summary, identify what help center changes are required
 for this issue.
 
 ## Starting point
 
-Read the `### UX change summary (detailed)` section from the issue description. If this
-task is running on a child issue, read it from the parent issue description instead.
+Read the `### UX change (detailed)` or `### Problem (detailed)` section from the issue
+description (the heading depends on the issue category). If this task is running on a
+child issue, read it from the parent issue description instead.
 
-This section, written in Task 3, is the authoritative list of UI changes for this issue.
+This section, written in Task 1, is the authoritative list of UI changes for this issue.
 Do not re-examine sources to determine what changed.
 
-If the issue description does not contain a `### UX change summary (detailed)` section,
-note this in the Scope table rationale and proceed using the available issue context.
+If the issue description does not contain either section, note this in the Help center
+scope table rationale and proceed using the available issue context.
+
+## Microcopy context
+
+Before scoping articles, check whether microcopy information is available for this issue:
+
+1. If this task is running on a subtask, check sibling subtasks for a **Microcopy**
+   subtask. If one exists, read its **Working file** link (a Google Sheet) and review the
+   populated rows for additional context on text changes.
+2. If this task is running on the story itself, check the **Working files** section for a
+   Microcopy sheet link and review it if present.
+3. If no microcopy sheet or summary is found, proceed without it — this is not an error.
+
+Use any microcopy context found to inform your assessment of which articles reference
+changing text, labels, or terminology.
 
 ## Stage 1 — Targeted article review
 
@@ -71,7 +86,7 @@ Report any additional articles found that were not already identified in Stage 2
 Add a new section to the issue description:
 
 ```
-### Scope
+### Help center scope
 
 | Article | Action | Rationale |
 |---|---|---|
